@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -45,6 +46,7 @@ const Users = () => {
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dialogRole, setDialogRole] = useState<CreatableRole>('student')
   const [editUser, setEditUser] = useState<UserRow | null>(null)
@@ -111,9 +113,13 @@ const Users = () => {
   }
 
   const filterUsers = (users: UserRow[]) => {
+    let result = users
+    if (statusFilter !== 'all') {
+      result = result.filter(u => (u.status || 'pending') === statusFilter)
+    }
     const q = search.trim().toLowerCase()
-    if (!q) return users
-    return users.filter((u) => {
+    if (!q) return result
+    return result.filter((u) => {
       const name = formatUserDisplayName(u).toLowerCase()
       const rawName = `${u.first_name ?? ''} ${u.last_name ?? ''}`.toLowerCase()
       const email = (u.email ?? '').toLowerCase()
@@ -122,10 +128,10 @@ const Users = () => {
     })
   }
 
-  const filteredStudents = useMemo(() => filterUsers(students), [students, search])
-  const filteredTeachers = useMemo(() => filterUsers(teachers), [teachers, search])
-  const filteredParents = useMemo(() => filterUsers(parents), [parents, search])
-  const filteredAdmins = useMemo(() => filterUsers(admins), [admins, search])
+  const filteredStudents = useMemo(() => filterUsers(students), [students, search, statusFilter])
+  const filteredTeachers = useMemo(() => filterUsers(teachers), [teachers, search, statusFilter])
+  const filteredParents = useMemo(() => filterUsers(parents), [parents, search, statusFilter])
+  const filteredAdmins = useMemo(() => filterUsers(admins), [admins, search, statusFilter])
 
   const handleDelete = async () => {
     if (!deleteTarget) return
@@ -228,6 +234,17 @@ const Users = () => {
           description="Créer et gérer les comptes élèves, professeurs et parents"
           actions={
             <div className="flex items-center gap-2">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-[140px] bg-white border-school-yellow/30">
+                  <SelectValue placeholder="Filtrer par statut" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tous les statuts</SelectItem>
+                  <SelectItem value="approved">Approuvé</SelectItem>
+                  <SelectItem value="pending">En attente</SelectItem>
+                  <SelectItem value="rejected">Suspendu</SelectItem>
+                </SelectContent>
+              </Select>
               <div className="relative hidden md:block">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-school-black/40 w-4 h-4" />
                 <Input
@@ -244,14 +261,25 @@ const Users = () => {
           }
         />
 
-        <div className="px-4 lg:px-6 pb-2 md:hidden">
-          <div className="relative">
+        <div className="px-4 lg:px-6 pb-2 md:hidden flex gap-2">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[120px] bg-white border-school-yellow/30">
+              <SelectValue placeholder="Statut" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tous</SelectItem>
+              <SelectItem value="approved">Approuvé</SelectItem>
+              <SelectItem value="pending">En attente</SelectItem>
+              <SelectItem value="rejected">Suspendu</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-school-black/40 w-4 h-4" />
             <Input
-              placeholder="Rechercher un utilisateur..."
+              placeholder="Rechercher..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 border-school-yellow/30"
+              className="pl-10 w-full border-school-yellow/30"
             />
           </div>
         </div>
@@ -466,15 +494,26 @@ const Users = () => {
                             </div>
 
                             <div className="flex items-center gap-2">
-                              <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs">Actif</Badge>
+                              {renderStatusBadge(teacher.status)}
                               <span className="text-xs text-slate-400 flex items-center gap-1 ml-auto">
                                 <Calendar className="w-3 h-3" />
                                 {new Date(teacher.created_at).toLocaleDateString('fr-FR')}
                               </span>
                             </div>
 
-                            <div className="flex justify-end gap-0.5 border-t border-slate-50 pt-2">
+                            <div className="flex items-center gap-1 justify-between border-t border-slate-50 pt-2">
                               <Button
+                                variant="ghost"
+                                size="sm"
+                                title={teacher.status === 'approved' ? 'Suspendre' : 'Approuver'}
+                                onClick={() => handleToggleStatus(teacher)}
+                                className={`h-7 px-2 text-xs gap-1 ${teacher.status === 'approved' ? 'hover:bg-amber-50 hover:text-amber-600' : 'hover:bg-green-50 hover:text-green-600'}`}
+                              >
+                                {teacher.status === 'approved' ? <ShieldOff className="w-3.5 h-3.5" /> : <ShieldCheck className="w-3.5 h-3.5" />}
+                                {teacher.status === 'approved' ? 'Suspendre' : 'Approuver'}
+                              </Button>
+                              <div className="flex gap-0.5">
+                                <Button
                                 variant="ghost" size="sm"
                                 className="h-7 w-7 p-0 hover:bg-school-yellow/10"
                                 onClick={() => { setEditUser(teacher); setEditIsStudent(false) }}
@@ -492,8 +531,9 @@ const Users = () => {
                               </Button>
                             </div>
                           </div>
-                        )
-                      })}
+                        </div>
+                      )
+                    })}
                     </div>
                   )}
                 </CardContent>
@@ -561,7 +601,7 @@ const Users = () => {
                             </div>
 
                             <div className="flex items-center gap-2">
-                              <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs">Actif</Badge>
+                              {renderStatusBadge(parent.status)}
                               <span className="text-xs text-slate-400 flex items-center gap-1 ml-auto">
                                 <Calendar className="w-3 h-3" />
                                 {new Date(parent.created_at).toLocaleDateString('fr-FR')}
@@ -569,8 +609,19 @@ const Users = () => {
                             </div>
 
                             <div className="flex items-center gap-1 justify-between border-t border-slate-50 pt-2">
-                              <Button
-                                variant="outline"
+                              <div className="flex gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  title={parent.status === 'approved' ? 'Suspendre' : 'Approuver'}
+                                  onClick={() => handleToggleStatus(parent)}
+                                  className={`h-7 px-2 text-xs gap-1 ${parent.status === 'approved' ? 'hover:bg-amber-50 hover:text-amber-600' : 'hover:bg-green-50 hover:text-green-600'}`}
+                                >
+                                  {parent.status === 'approved' ? <ShieldOff className="w-3.5 h-3.5" /> : <ShieldCheck className="w-3.5 h-3.5" />}
+                                  {parent.status === 'approved' ? 'Suspendre' : 'Approuver'}
+                                </Button>
+                                <Button
+                                  variant="outline"
                                 size="sm"
                                 className="h-7 text-xs gap-1 border-school-yellow/40 hover:bg-school-yellow/10"
                                 onClick={() => setParentManageUser(parent)}
@@ -578,6 +629,7 @@ const Users = () => {
                                 <UsersIcon className="w-3 h-3" />
                                 Enfants
                               </Button>
+                              </div>
                               <div className="flex gap-0.5">
                                 <Button
                                   variant="ghost" size="sm"
@@ -667,15 +719,26 @@ const Users = () => {
                             </div>
 
                             <div className="flex items-center gap-2">
-                              <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs">Actif</Badge>
+                              {renderStatusBadge(admin.status)}
                               <span className="text-xs text-slate-400 flex items-center gap-1 ml-auto">
                                 <Calendar className="w-3 h-3" />
                                 {new Date(admin.created_at).toLocaleDateString('fr-FR')}
                               </span>
                             </div>
 
-                            <div className="flex justify-end gap-0.5 border-t border-slate-50 pt-2">
+                            <div className="flex items-center gap-1 justify-between border-t border-slate-50 pt-2">
                               <Button
+                                variant="ghost"
+                                size="sm"
+                                title={admin.status === 'approved' ? 'Suspendre' : 'Approuver'}
+                                onClick={() => handleToggleStatus(admin)}
+                                className={`h-7 px-2 text-xs gap-1 ${admin.status === 'approved' ? 'hover:bg-amber-50 hover:text-amber-600' : 'hover:bg-green-50 hover:text-green-600'}`}
+                              >
+                                {admin.status === 'approved' ? <ShieldOff className="w-3.5 h-3.5" /> : <ShieldCheck className="w-3.5 h-3.5" />}
+                                {admin.status === 'approved' ? 'Suspendre' : 'Approuver'}
+                              </Button>
+                              <div className="flex gap-0.5">
+                                <Button
                                 variant="ghost" size="sm"
                                 className="h-7 w-7 p-0 hover:bg-school-yellow/10"
                                 onClick={() => { setEditUser(admin); setEditIsStudent(false) }}
@@ -693,8 +756,9 @@ const Users = () => {
                               </Button>
                             </div>
                           </div>
-                        )
-                      })}
+                        </div>
+                      )
+                    })}
                     </div>
                   )}
                 </CardContent>

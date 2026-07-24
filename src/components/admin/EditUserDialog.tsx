@@ -160,7 +160,7 @@ export function EditUserDialog({
               <SelectContent>
                 <SelectItem value="approved">Approuvé (Validé)</SelectItem>
                 <SelectItem value="pending">En attente (Pending)</SelectItem>
-                <SelectItem value="suspended">Suspendu</SelectItem>
+                <SelectItem value="rejected">Suspendu</SelectItem>
               </SelectContent>
             </Select>
           </div>
