@@ -2,7 +2,7 @@ import { PageHeader } from '@/components/layout/PageHeader'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { MessageSquare, Calendar, BookOpen, Bell, Clock } from 'lucide-react'
+import { MessageSquare, Calendar, BookOpen, Bell, Clock, User, CheckCircle, AlertCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/components/auth/AuthProvider'
@@ -11,6 +11,7 @@ import {
   fetchCalendarSessionsForStudent,
   sessionsForDateActive,
 } from '@/lib/courses-api'
+import { fetchStudentDossierProfile, fetchStudentPayments, paymentStatusLabel } from '@/lib/student-dossier-api'
 
 const StudentDashboard = () => {
   const navigate = useNavigate()
@@ -30,6 +31,26 @@ const StudentDashboard = () => {
     queryFn: () => fetchAnnouncements(3),
   })
 
+  const { data: profile } = useQuery({
+    queryKey: ['student-profile', user?.id],
+    queryFn: () => fetchStudentDossierProfile(user!.id),
+    enabled: !!user?.id,
+  })
+
+  const { data: payments } = useQuery({
+    queryKey: ['student-payments', user?.id],
+    queryFn: () => fetchStudentPayments(user!.id),
+    enabled: !!user?.id,
+  })
+
+  const currentMonthPayment = payments?.find(p => {
+    const d = new Date(p.paymentDate)
+    const today = new Date()
+    return d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear()
+  })
+
+  const paymentStatus = currentMonthPayment?.status === 'completed' ? 'paid' : 'unpaid'
+
   return (
     <div className="min-h-screen bg-school-gray-light">
       <main className="flex-1">
@@ -39,6 +60,35 @@ const StudentDashboard = () => {
         />
 
         <div className="p-4 space-y-6 animate-fade-in">
+          {profile && (
+            <Card className="border-school-yellow/20 bg-white">
+              <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+                    <User className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h2 className="font-semibold text-lg text-school-black">{profile.name}</h2>
+                    <p className="text-school-black/60 text-sm">
+                      Classe : {profile.className || 'Non assignée'}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col items-start sm:items-end gap-1 border-t sm:border-t-0 pt-3 sm:pt-0 w-full sm:w-auto">
+                  <span className="text-xs text-school-black/50">Paiement (Ce mois)</span>
+                  <Badge 
+                    variant={paymentStatus === 'paid' ? 'default' : 'destructive'}
+                    className={`flex items-center gap-1 ${paymentStatus === 'paid' ? 'bg-green-500 hover:bg-green-600 text-white border-green-500' : ''}`}
+                  >
+                    {paymentStatus === 'paid' ? <CheckCircle className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
+                    {paymentStatusLabel(paymentStatus)}
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             <Button
               onClick={() => navigate('/messaging')}

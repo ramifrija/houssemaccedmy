@@ -104,33 +104,85 @@ const MessagingPage = () => {
     queryFn: () => fetchMessages(selectedConversation!, user!.id, messagesLimit, 0),
   })
 
+  // Souscription Realtime pour les messages dans la conversation active
   useEffect(() => {
-    if (!selectedConversation) return
+    if (!selectedConversation || !user?.id) return
+
     const channel = supabase
       .channel(`messages-conv-${selectedConversation}`)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${selectedConversation}` },
-        async () => {
-          queryClient.invalidateQueries({ queryKey: ['messages', selectedConversation] })
+        async (payload) => {
+          const newMsg = payload.new as any
+
+          // Mise à jour instantanée du cache — aucun appel serveur
+          queryClient.setQueryData(
+            ['messages', selectedConversation, messagesLimit],
+            (oldData: any) => {
+              if (!oldData) return oldData
+              if (oldData.some((m: any) => m.id === newMsg.id)) return oldData
+
+              const isOwn = newMsg.sender_id === user?.id
+              return [
+                ...oldData,
+                {
+                  id: newMsg.id,
+                  senderId: newMsg.sender_id,
+                  senderName: isOwn ? 'Moi' : '',
+                  content: newMsg.content,
+                  sentAt: newMsg.sent_at,
+                  isOwn,
+                  type: newMsg.message_type || 'text',
+                  metadata: newMsg.metadata,
+                },
+              ]
+            }
+          )
+
+          // Rafraichir la liste des conversations (compteurs non-lus, dernier message)
           queryClient.invalidateQueries({ queryKey: queryKeys.conversations })
           if (isAdmin) {
             queryClient.invalidateQueries({ queryKey: ['admin-all-conversations'] })
           }
-          // Marquer comme lu lors de la réception d'un nouveau message en temps réel
+
+          // Marquer la conversation comme lue
           try {
             await markConversationAsRead(selectedConversation)
-            queryClient.invalidateQueries({ queryKey: queryKeys.conversations })
           } catch (e) {
             console.error(e)
           }
         }
       )
       .subscribe()
+
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [selectedConversation, queryClient, isAdmin])
+  }, [selectedConversation, messagesLimit, queryClient, isAdmin, user?.id])
+
+  // Souscription Realtime pour la liste des conversations (nouveaux messages entrants)
+  useEffect(() => {
+    if (!user?.id) return
+
+    const convChannel = supabase
+      .channel('conversations-list-update')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages' },
+        () => {
+          queryClient.invalidateQueries({ queryKey: queryKeys.conversations })
+          if (isAdmin) {
+            queryClient.invalidateQueries({ queryKey: ['admin-all-conversations'] })
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(convChannel)
+    }
+  }, [user?.id, queryClient, isAdmin])
 
   const sendExisting = useMutation({
     mutationFn: async (content: string) => {
