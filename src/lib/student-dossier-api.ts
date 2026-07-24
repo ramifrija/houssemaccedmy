@@ -150,24 +150,39 @@ export async function fetchStudentsForDossier(
     students = Array.from(studentMap.values())
   } else if (teacherId) {
     const rows = await fetchTeacherClassStudents(teacherId)
-    const classByStudent = new Map<string, { name: string; id: number }>()
+    
+    // Fetch the classes the teacher actually teaches
+    const { data: teacherCourses } = await supabase
+      .from('courses')
+      .select('class_id')
+      .eq('teacher_id', teacherId)
+    const teacherClassIds = new Set((teacherCourses ?? []).map(c => c.class_id))
+
+    const classByStudent = new Map<string, { name: string; id: number }[]>()
     const { data: enrollments } = await supabase
       .from('student_enrollments')
       .select('student_id, class_id, classes(name)')
       .in('student_id', rows.map((r) => r.userId))
 
     for (const e of enrollments ?? []) {
+      if (!teacherClassIds.has(e.class_id)) continue
       const cls = e.classes as { name: string } | null
-      classByStudent.set(e.student_id, { name: cls?.name ?? '—', id: e.class_id })
+      const list = classByStudent.get(e.student_id) ?? []
+      list.push({ name: cls?.name ?? '—', id: e.class_id })
+      classByStudent.set(e.student_id, list)
     }
 
-    students = rows.map((s) => ({
-      userId: s.userId,
-      name: s.name,
-      email: s.email,
-      className: classByStudent.get(s.userId)?.name ?? null,
-      classId: classByStudent.get(s.userId)?.id ?? null,
-    }))
+    students = rows.map((s) => {
+      const studentClasses = classByStudent.get(s.userId) ?? []
+      const classNames = studentClasses.map(c => c.name).join(', ')
+      return {
+        userId: s.userId,
+        name: s.name,
+        email: s.email,
+        className: classNames || null,
+        classId: studentClasses[0]?.id ?? null,
+      }
+    })
   } else {
     return []
   }

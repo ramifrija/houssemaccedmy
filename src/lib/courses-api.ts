@@ -461,3 +461,20 @@ export async function updateCalendarSession(input: UpdateSessionInput) {
 
   if (sessionError) throw sessionError
 }
+
+
+export async function fetchTeacherCoursesForClass(teacherId: string, classId: number): Promise<{id: string, title: string}[]> {
+  const { data, error } = await supabase
+    .from('courses')
+    .select('id, title')
+    .eq('teacher_id', teacherId)
+    .eq('class_id', classId)
+    .order('title')
+
+  if (error) {
+    console.error('Error fetching teacher courses for class:', error)
+    return []
+  }
+
+  return data ?? []
+}

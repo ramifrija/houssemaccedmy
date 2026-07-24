@@ -118,14 +118,82 @@ export async function fetchMessageableContacts(): Promise<ContactItem[]> {
 }
 
 export async function fetchMessageableClasses(): Promise<ClassContactItem[]> {
-  const { data, error } = await supabase.rpc('get_messageable_classes')
-  if (error) throw error
+  const { data: classes, error } = await supabase
+    .from('classes')
+    .select('id, name')
+    .order('name')
 
-  return (data ?? []).map((row: Record<string, unknown>) => ({
-    classId: Number(row.class_id),
-    name: String(row.class_name),
-    studentCount: Number(row.student_count ?? 0),
+  if (error) {
+    console.error('Error fetching classes:', error)
+    return []
+  }
+
+  const { data: enrollments } = await supabase
+    .from('student_enrollments')
+    .select('class_id')
+
+  const countByClass = new Map<number, number>()
+  for (const row of enrollments ?? []) {
+    countByClass.set(row.class_id, (countByClass.get(row.class_id) ?? 0) + 1)
+  }
+
+  return (classes ?? []).map((cls) => ({
+    classId: cls.id,
+    name: cls.name,
+    studentCount: countByClass.get(cls.id) ?? 0,
   }))
+}
+
+export interface ParentContactItem {
+  userId: string
+  name: string
+  childrenNames: string
+}
+
+export async function fetchParentsForMessaging(): Promise<ParentContactItem[]> {
+  const { data: parents, error } = await supabase
+    .from('profiles')
+    .select('user_id, first_name, last_name')
+    .eq('role_id', 4)
+
+  if (error) {
+    console.error('Error fetching parents:', error)
+    return []
+  }
+
+  const { data: psData } = await supabase.from('parent_students').select('parent_id, student_id')
+  const { data: allProfiles } = await supabase.from('profiles').select('user_id, parent_id, first_name, last_name')
+
+  const profileMap = new Map<string, string>()
+  for (const p of allProfiles ?? []) {
+    profileMap.set(p.user_id, formatUserDisplayName({ first_name: p.first_name, last_name: p.last_name }))
+  }
+
+  const childrenByParent = new Map<string, Set<string>>()
+  
+  for (const row of allProfiles ?? []) {
+    if (row.parent_id) {
+      const set = childrenByParent.get(row.parent_id) ?? new Set()
+      const name = formatUserDisplayName({ first_name: row.first_name, last_name: row.last_name })
+      set.add(name)
+      childrenByParent.set(row.parent_id, set)
+    }
+  }
+
+  for (const row of psData ?? []) {
+    const set = childrenByParent.get(row.parent_id) ?? new Set()
+    const name = profileMap.get(row.student_id)
+    if (name) {
+      set.add(name)
+      childrenByParent.set(row.parent_id, set)
+    }
+  }
+
+  return parents.map(p => ({
+    userId: p.user_id,
+    name: formatUserDisplayName(p),
+    childrenNames: Array.from(childrenByParent.get(p.user_id) ?? []).join(', ')
+  })).sort((a, b) => a.name.localeCompare(b.name, 'fr'))
 }
 
 export async function fetchMessages(
@@ -245,8 +313,54 @@ export async function sendMessageToClass(classId: number, content: string, title
     p_content: content.trim(),
     p_title: title?.trim() || null,
   })
-  if (error) throw error
-  return String(data)
+  if (!error) return String(data)
+
+  // Fallback JS si la RPC échoue (ex: mauvaise vérification du rôle)
+  const { data: userResponse } = await supabase.auth.getUser()
+  const userId = userResponse.user?.id
+  if (!userId) throw new Error('Non authentifié')
+
+  const { data: classData, error: classError } = await supabase
+    .from('classes')
+    .select('name')
+    .eq('id', classId)
+    .single()
+  if (classError) throw classError
+
+  const { data: convData, error: convError } = await supabase
+    .from('conversations')
+    .insert({ title: title?.trim() || `Classe ${classData.name}`, is_group: true, created_by: userId })
+    .select('id')
+    .single()
+  if (convError) throw convError
+
+  const { data: enrollments } = await supabase
+    .from('student_enrollments')
+    .select('student_id')
+    .eq('class_id', classId)
+
+  const participants = [{ conversation_id: convData.id, user_id: userId }]
+  for (const en of enrollments ?? []) {
+    if (en.student_id !== userId) {
+      participants.push({ conversation_id: convData.id, user_id: en.student_id })
+    }
+  }
+
+  const { error: partError } = await supabase
+    .from('conversation_participants')
+    .insert(participants)
+  if (partError) throw partError
+
+  const { error: msgError } = await supabase
+    .from('messages')
+    .insert({
+      conversation_id: convData.id,
+      sender_id: userId,
+      content: content.trim(),
+    })
+  if (msgError) throw msgError
+
+  return String(convData.id)
 }
 
 export async function sendPollMessage(

@@ -11,6 +11,7 @@ import {
   fetchStudentsForDossier,
   paymentStatusLabel,
 } from '@/lib/student-dossier-api'
+import { fetchClasses, fetchTeacherClasses } from '@/lib/classes-api'
 import { Search, Users, ChevronRight } from 'lucide-react'
 
 const StudentsDossiersPage = () => {
@@ -30,19 +31,40 @@ const StudentsDossiersPage = () => {
     console.error("Error fetching students:", error);
   }
 
+  const { data: allAvailableClasses = [] } = useQuery({
+    queryKey: ['available-classes', user?.id, isAdmin],
+    queryFn: async () => {
+      if (isAdmin) {
+        const cls = await fetchClasses()
+        return cls.map(c => c.name)
+      } else if (user?.id) {
+        const cls = await fetchTeacherClasses(user.id)
+        return cls.map(c => c.name)
+      }
+      return []
+    },
+    enabled: !!user?.id,
+  })
+
   const uniqueClasses = useMemo(() => {
-    const classes = new Set<string>()
+    const classes = new Set<string>(allAvailableClasses)
     students.forEach((s) => {
-      if (s.className) classes.add(s.className)
+      if (s.className) {
+        s.className.split(',').forEach(c => classes.add(c.trim()))
+      }
     })
     return Array.from(classes).sort()
-  }, [students])
+  }, [students, allAvailableClasses])
 
   const filtered = useMemo(() => {
     let result = students
     
     if (selectedClass !== 'all') {
-      result = result.filter(s => s.className === selectedClass)
+      result = result.filter(s => {
+        if (!s.className) return false;
+        const studentClasses = s.className.split(',').map(c => c.trim());
+        return studentClasses.includes(selectedClass);
+      })
     }
 
     const q = search.trim().toLowerCase()
@@ -77,7 +99,7 @@ const StudentsDossiersPage = () => {
             />
           </div>
           
-          {isAdmin && uniqueClasses.length > 0 && (
+          {uniqueClasses.length > 0 && (
             <Select value={selectedClass} onValueChange={setSelectedClass}>
               <SelectTrigger className="w-full sm:w-[220px] bg-white border-school-yellow/30">
                 <SelectValue placeholder="Toutes les classes" />

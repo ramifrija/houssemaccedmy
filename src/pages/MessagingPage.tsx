@@ -35,6 +35,7 @@ import {
   fetchAdminAllConversations,
   fetchMessageableClasses,
   fetchMessageableContacts,
+  fetchParentsForMessaging,
   fetchMessages,
   fetchMyConversations,
   sendMessage,
@@ -44,9 +45,11 @@ import {
   markConversationAsRead,
   sendPollMessage,
 } from '@/lib/messaging-api'
+import { fetchTeacherCoursesForClass } from '@/lib/courses-api'
 import { CreatePollDialog } from '@/components/messaging/CreatePollDialog'
 import { PollMessage } from '@/components/messaging/PollMessage'
 import { queryKeys } from '@/lib/query-keys'
+import { formatUserDisplayName } from '@/lib/display-user-name'
 
 const MessagingPage = () => {
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
@@ -65,11 +68,12 @@ const MessagingPage = () => {
   // Modal Nouveau Message
   const [newChatOpen, setNewChatOpen] = useState(false)
   const [createPollOpen, setCreatePollOpen] = useState(false)
-  const [recipientType, setRecipientType] = useState<'individual' | 'class'>('individual')
+  const [recipientType, setRecipientType] = useState<'individual' | 'class' | 'parent'>('individual')
   const [contactSearch, setContactSearch] = useState('')
   const [selectedContactIds, setSelectedContactIds] = useState<string[]>([])
   const [groupTitle, setGroupTitle] = useState('')
-  const [selectedClass, setSelectedClass] = useState('')
+  const [selectedClass, setSelectedClass] = useState<string>('')
+  const [selectedCourseId, setSelectedCourseId] = useState<string>('')
   const [firstMessage, setFirstMessage] = useState('')
 
   const { toast } = useToast()
@@ -100,6 +104,29 @@ const MessagingPage = () => {
     queryFn: fetchMessageableClasses,
     enabled: newChatOpen && recipientType === 'class',
   })
+
+  const { data: parents = [] } = useQuery({
+    queryKey: ['messageable-parents'],
+    queryFn: fetchParentsForMessaging,
+    enabled: newChatOpen && recipientType === 'parent',
+  })
+
+  const { data: teacherCourses = [] } = useQuery({
+    queryKey: ['teacher-class-courses', user?.id, selectedClass],
+    queryFn: () => {
+      if (!user?.id || !selectedClass) return []
+      return fetchTeacherCoursesForClass(user.id, Number(selectedClass))
+    },
+    enabled: newChatOpen && recipientType === 'class' && !!selectedClass && userProfile?.role === 'teacher',
+  })
+
+  useEffect(() => {
+    if (teacherCourses.length === 1) {
+      setSelectedCourseId(teacherCourses[0].id)
+    } else if (teacherCourses.length === 0) {
+      setSelectedCourseId('')
+    }
+  }, [teacherCourses])
 
   const { data: messages = [], isLoading: loadingMessages, isError: messagesError, error: messagesFetchError } = useQuery({
     queryKey: selectedConversation ? ['messages', selectedConversation, messagesLimit] : ['messages', 'none'],
@@ -236,7 +263,24 @@ const MessagingPage = () => {
 
       if (recipientType === 'class') {
         if (!selectedClass) throw new Error('Veuillez choisir une classe')
-        return sendMessageToClass(Number(selectedClass), firstMessage.trim())
+        if (userProfile?.role === 'teacher' && teacherCourses.length > 1 && !selectedCourseId) {
+          throw new Error('Veuillez choisir une matière')
+        }
+        
+        const cls = classes.find(c => c.classId.toString() === selectedClass)
+        const className = cls ? cls.name : 'Classe'
+        
+        let courseName = ''
+        if (userProfile?.role === 'teacher' && selectedCourseId) {
+          const course = teacherCourses.find(c => c.id === selectedCourseId)
+          if (course) courseName = `${course.title} - `
+        }
+        
+        const creatorName = userProfile ? formatUserDisplayName(userProfile as any) : 'Professeur'
+        const roleLabel = userProfile?.role === 'admin' ? 'Admin' : 'Prof'
+        const customTitle = `${courseName}Classe ${className} - ${creatorName} (${roleLabel})`
+        
+        return sendMessageToClass(Number(selectedClass), firstMessage.trim(), customTitle)
       }
 
       if (selectedContactIds.length === 0) {
@@ -246,7 +290,8 @@ const MessagingPage = () => {
       if (selectedContactIds.length === 1) {
         return startConversation(selectedContactIds[0], firstMessage.trim())
       } else {
-        const title = groupTitle.trim() || 'Groupe de discussion'
+        const title = groupTitle.trim()
+        if (!title) throw new Error('Veuillez donner un nom à ce groupe')
         return startGroupConversation(title, selectedContactIds, firstMessage.trim())
       }
     },
@@ -331,10 +376,13 @@ const MessagingPage = () => {
     )
   }
 
-  const filteredContacts = contacts.filter((c) =>
-    c.name.toLowerCase().includes(contactSearch.toLowerCase()) ||
-    c.role.toLowerCase().includes(contactSearch.toLowerCase())
-  )
+  const filteredContacts = contacts.filter((c) => {
+    if (userProfile?.role === 'parent' && c.role !== 'admin') {
+      return false
+    }
+    return c.name.toLowerCase().includes(contactSearch.toLowerCase()) ||
+           c.role.toLowerCase().includes(contactSearch.toLowerCase())
+  })
 
   // Choisir les conversations à afficher selon le mode Admin ou Utilisateur
   const displayedConversations: ConversationItem[] = isAdmin && adminMode === 'all'
@@ -381,27 +429,41 @@ const MessagingPage = () => {
               </DialogHeader>
 
               <div className="space-y-4 py-2">
-                <div className="grid grid-cols-2 gap-2 p-1 bg-school-gray-light rounded-lg border border-school-yellow/20">
+                <div className={`grid gap-2 p-1 bg-school-gray-light rounded-lg border border-school-yellow/20 ${userProfile?.role === 'parent' ? 'grid-cols-1' : 'grid-cols-3'}`}>
                   <Button
                     type="button"
                     variant={recipientType === 'individual' ? 'default' : 'ghost'}
                     size="sm"
                     className={recipientType === 'individual' ? 'bg-school-yellow text-school-black shadow-xs font-semibold' : 'text-school-black/70'}
-                    onClick={() => setRecipientType('individual')}
+                    onClick={() => { setRecipientType('individual'); setSelectedContactIds([]) }}
                   >
                     <Users className="w-4 h-4 mr-2" />
-                    Contact(s) / Groupe
+                    Contact(s)
                   </Button>
-                  <Button
-                    type="button"
-                    variant={recipientType === 'class' ? 'default' : 'ghost'}
-                    size="sm"
-                    className={recipientType === 'class' ? 'bg-school-yellow text-school-black shadow-xs font-semibold' : 'text-school-black/70'}
-                    onClick={() => setRecipientType('class')}
-                  >
-                    <Building2 className="w-4 h-4 mr-2" />
-                    Groupe de Classe
-                  </Button>
+                  {userProfile?.role !== 'parent' && (
+                    <>
+                      <Button
+                        type="button"
+                        variant={recipientType === 'parent' ? 'default' : 'ghost'}
+                        size="sm"
+                        className={recipientType === 'parent' ? 'bg-school-yellow text-school-black shadow-xs font-semibold' : 'text-school-black/70'}
+                        onClick={() => { setRecipientType('parent'); setSelectedContactIds([]) }}
+                      >
+                        <Users className="w-4 h-4 mr-2" />
+                        Parents
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={recipientType === 'class' ? 'default' : 'ghost'}
+                        size="sm"
+                        className={recipientType === 'class' ? 'bg-school-yellow text-school-black shadow-xs font-semibold' : 'text-school-black/70'}
+                        onClick={() => { setRecipientType('class'); setSelectedContactIds([]) }}
+                      >
+                        <Building2 className="w-4 h-4 mr-2" />
+                        Classe
+                      </Button>
+                    </>
+                  )}
                 </div>
 
                 {recipientType === 'individual' ? (
@@ -438,7 +500,7 @@ const MessagingPage = () => {
 
                     {selectedContactIds.length > 1 && (
                       <Input
-                        placeholder="Nom du groupe de discussion (optionnel)"
+                        placeholder="Nom du groupe de discussion (obligatoire)"
                         value={groupTitle}
                         onChange={(e) => setGroupTitle(e.target.value)}
                         className="border-school-yellow/30"
@@ -478,6 +540,76 @@ const MessagingPage = () => {
                       )}
                     </div>
                   </div>
+                ) : recipientType === 'parent' ? (
+                  <div className="space-y-3">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Input
+                        placeholder="Rechercher un parent ou le nom d'un enfant..."
+                        value={contactSearch}
+                        onChange={(e) => setContactSearch(e.target.value)}
+                        className="pl-9 border-school-yellow/30 focus:border-school-yellow"
+                      />
+                    </div>
+
+                    {selectedContactIds.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 p-2 bg-school-yellow/10 rounded-lg border border-school-yellow/20 max-h-24 overflow-y-auto">
+                        {selectedContactIds.map((id) => {
+                          const contact = parents.find((c) => c.userId === id)
+                          return (
+                            <Badge
+                              key={id}
+                              className="bg-school-yellow text-school-black hover:bg-school-yellow-dark flex items-center gap-1 text-xs"
+                            >
+                              {contact?.name ?? 'Parent'}
+                              <X
+                                className="w-3 h-3 cursor-pointer hover:text-red-700"
+                                onClick={() => toggleContactSelection(id)}
+                              />
+                            </Badge>
+                          )
+                        })}
+                      </div>
+                    )}
+
+                    {selectedContactIds.length > 1 && (
+                      <Input
+                        placeholder="Nom du groupe de discussion (obligatoire)"
+                        value={groupTitle}
+                        onChange={(e) => setGroupTitle(e.target.value)}
+                        className="border-school-yellow/30"
+                      />
+                    )}
+
+                    <div className="h-48 overflow-y-auto rounded-lg border border-school-yellow/20 bg-white">
+                      {parents
+                        .filter((c) => 
+                          c.name.toLowerCase().includes(contactSearch.toLowerCase()) || 
+                          c.childrenNames.toLowerCase().includes(contactSearch.toLowerCase())
+                        )
+                        .map((contact) => (
+                          <div
+                            key={contact.userId}
+                            className="flex items-center gap-3 p-2 hover:bg-school-yellow/5 border-b border-school-yellow/10 last:border-0"
+                          >
+                            <Checkbox
+                              checked={selectedContactIds.includes(contact.userId)}
+                              onCheckedChange={() => toggleContactSelection(contact.userId)}
+                              className="border-school-yellow/50 data-[state=checked]:bg-school-yellow data-[state=checked]:text-school-black"
+                            />
+                            <div className="flex-1 cursor-pointer" onClick={() => toggleContactSelection(contact.userId)}>
+                              <p className="text-sm font-medium text-school-black">{contact.name}</p>
+                              <p className="text-xs text-school-black/60">
+                                {contact.childrenNames ? `Parent de : ${contact.childrenNames}` : 'Parent sans enfant rattaché'}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      {parents.length === 0 && (
+                        <p className="text-center text-sm text-school-black/50 py-4">Aucun parent trouvé.</p>
+                      )}
+                    </div>
+                  </div>
                 ) : (
                   <div className="space-y-3">
                     <label className="text-xs font-semibold text-school-black">Sélectionner une classe :</label>
@@ -493,6 +625,24 @@ const MessagingPage = () => {
                         ))}
                       </SelectContent>
                     </Select>
+
+                    {userProfile?.role === 'teacher' && teacherCourses.length > 1 && (
+                      <div className="space-y-1 mt-3">
+                        <label className="text-xs font-semibold text-school-black">Sélectionner une matière (obligatoire) :</label>
+                        <Select value={selectedCourseId} onValueChange={setSelectedCourseId}>
+                          <SelectTrigger className="border-school-yellow/30">
+                            <SelectValue placeholder="Choisir la matière pour ce groupe..." />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white">
+                            {teacherCourses.map((c) => (
+                              <SelectItem key={c.id} value={c.id}>
+                                📚 {c.title}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -509,7 +659,9 @@ const MessagingPage = () => {
                   disabled={
                     !firstMessage.trim() ||
                     startNewChat.isPending ||
-                    (recipientType === 'individual' ? selectedContactIds.length === 0 : !selectedClass)
+                    (recipientType === 'individual' || recipientType === 'parent' ? 
+                      (selectedContactIds.length === 0 || (selectedContactIds.length > 1 && !groupTitle.trim())) 
+                      : (!selectedClass || (userProfile?.role === 'teacher' && teacherCourses.length > 1 && !selectedCourseId)))
                   }
                   onClick={() => startNewChat.mutate()}
                 >
@@ -603,9 +755,24 @@ const MessagingPage = () => {
                 Aucune conversation trouvée.
               </p>
             ) : (
-            filteredConversations.map((conversation: ConversationItem) => {
+            filteredConversations.map((conversation: any) => {
                 const unread = conversation.unreadCount ?? 0
                 const hasUnread = unread > 0 && selectedConversation !== conversation.id
+                
+                let avatarBgClass = "bg-school-yellow/20"
+                let iconClass = "text-school-black"
+                
+                const roleStr = conversation.role?.toLowerCase() || ''
+                const nameStr = conversation.name?.toLowerCase() || ''
+                
+                if (roleStr === 'admin' || nameStr.includes('(admin)')) {
+                  avatarBgClass = "bg-blue-100"
+                  iconClass = "text-blue-600"
+                } else if (roleStr === 'teacher' || roleStr === 'prof' || nameStr.includes('(prof)')) {
+                  avatarBgClass = "bg-green-100"
+                  iconClass = "text-green-600"
+                }
+
                 return (
                 <div
                   key={conversation.id}
@@ -619,11 +786,11 @@ const MessagingPage = () => {
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="relative w-9 h-9 shrink-0">
-                        <div className="w-9 h-9 bg-school-yellow/20 rounded-full flex items-center justify-center">
+                        <div className={cn("w-9 h-9 rounded-full flex items-center justify-center", avatarBgClass)}>
                           {conversation.isGroup ? (
-                            <Building2 className="w-4 h-4 text-school-black" />
+                            <Building2 className={cn("w-4 h-4", iconClass)} />
                           ) : (
-                            <Users className="w-4 h-4 text-school-black" />
+                            <Users className={cn("w-4 h-4", iconClass)} />
                           )}
                         </div>
                         {hasUnread && (

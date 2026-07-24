@@ -278,7 +278,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         title: 'Déconnexion réussie',
         description: 'Vous avez été déconnecté avec succès.',
       })
-      
+
       // Clean the URL and reset application state
       window.location.replace('/')
     } catch (error) {

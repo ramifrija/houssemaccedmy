@@ -15,6 +15,7 @@ import {
   deleteCalendarSession,
   fetchCalendarSessions,
   fetchCalendarSessionsForStudent,
+  fetchCalendarSessionsForTeacher,
   sessionsForDateActive,
   sessionsUpcoming,
   updateCalendarSession,
@@ -107,11 +108,16 @@ const CalendarPage = () => {
   const { data: sessions = [], isLoading } = useQuery({
     queryKey: userProfile?.role === 'parent' && activeChild
       ? ['calendar-sessions-child', activeChild.user_id]
+      : userProfile?.role === 'teacher'
+      ? ['calendar-sessions-teacher', user?.id]
       : queryKeys.calendarSessions,
     queryFn: () => {
       if (userProfile?.role === 'parent') {
         if (!activeChild?.user_id) return []
         return fetchCalendarSessionsForStudent(activeChild.user_id)
+      }
+      if (userProfile?.role === 'teacher' && user?.id) {
+        return fetchCalendarSessionsForTeacher(user.id)
       }
       return fetchCalendarSessions()
     },
