@@ -23,6 +23,7 @@ import {
   AnnouncementAudience,
   AnnouncementPriority,
   audienceLabel,
+
   createAnnouncement,
   deleteAnnouncement,
   fetchAnnouncements,
@@ -45,6 +46,8 @@ const AnnouncementsPage = () => {
   const [message, setMessage] = useState('')
   const [priority, setPriority] = useState<AnnouncementPriority>('medium')
   const [targetAudience, setTargetAudience] = useState<AnnouncementAudience>('all')
+  const [notifPage, setNotifPage] = useState(1)
+  const itemsPerPage = 8
   const { toast } = useToast()
   const { user, userProfile } = useAuth()
   const queryClient = useQueryClient()
@@ -237,64 +240,141 @@ const AnnouncementsPage = () => {
           }
         />
 
-        <div className="p-4 space-y-4">
-          <div className="bg-white p-4 rounded-xl border border-school-yellow/20 mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-school-black">Annonces Générales ({announcements.length})</h2>
-          </div>
-          
-          <div className="space-y-4">
-            {isLoading ? (
-              <p className="text-sm text-center text-school-black/50 py-8">Chargement...</p>
-            ) : announcements.length === 0 ? (
-              <Card>
-                <CardContent className="py-12 text-center text-school-black/50">
-                  <Bell className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                  Aucune annonce pour le moment
-                </CardContent>
-              </Card>
-            ) : (
-              announcements.map((announcement) => (
-                <Card key={announcement.id} className={getPriorityColor(announcement.priority)}>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2 min-w-0">
-                        {getPriorityIcon(announcement.priority)}
-                        <CardTitle className="text-lg truncate">{announcement.title}</CardTitle>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <Badge variant="outline" className="text-xs">
-                          {audienceLabel(announcement.audience)}
-                        </Badge>
-                        {isAdmin && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => remove.mutate(announcement.id)}
-                          >
-                            <Trash2 className="w-4 h-4 text-red-500" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-school-black/80 mb-3 whitespace-pre-wrap">{announcement.content}</p>
-                    <div className="flex justify-between text-xs text-school-black/60">
-                      <span>Par {announcement.authorName}</span>
-                      <span>
-                        {new Date(announcement.createdAt).toLocaleString('fr-FR', {
-                          day: 'numeric',
-                          month: 'short',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </span>
-                    </div>
+        <div className="p-4 space-y-4 max-w-5xl mx-auto">
+          <Tabs defaultValue="announcements" className="w-full">
+            <TabsList className="w-full mb-6 max-w-md mx-auto grid grid-cols-2">
+              <TabsTrigger value="announcements">Annonces ({announcements.length})</TabsTrigger>
+              <TabsTrigger value="notifications" className="relative">
+                Notifications
+                {userNotifications.length > 0 && (
+                  <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center rounded-full p-0 text-[10px]">
+                    {userNotifications.length}
+                  </Badge>
+                )}
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="announcements" className="space-y-4 mt-0">
+              {isLoading ? (
+                <p className="text-sm text-center text-school-black/50 py-8">Chargement...</p>
+              ) : announcements.length === 0 ? (
+                <Card>
+                  <CardContent className="py-12 text-center text-school-black/50">
+                    <Bell className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                    Aucune annonce pour le moment
                   </CardContent>
                 </Card>
-              ))
-            )}
-          </div>
+              ) : (
+                announcements.map((announcement) => (
+                  <Card key={announcement.id} className={getPriorityColor(announcement.priority)}>
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          {getPriorityIcon(announcement.priority)}
+                          <CardTitle className="text-lg truncate">{announcement.title}</CardTitle>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <Badge variant="outline" className="text-xs">
+                            {audienceLabel(announcement.audience)}
+                          </Badge>
+                          {isAdmin && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => remove.mutate(announcement.id)}
+                            >
+                              <Trash2 className="w-4 h-4 text-red-500" />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-school-black/80 mb-3 whitespace-pre-wrap">{announcement.content}</p>
+                      <div className="flex justify-between text-xs text-school-black/60">
+                        <span>Par {announcement.authorName}</span>
+                        <span>
+                          {new Date(announcement.createdAt).toLocaleString('fr-FR', {
+                            day: 'numeric',
+                            month: 'short',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </TabsContent>
+
+            <TabsContent value="notifications" className="space-y-4 mt-0">
+              {loadingNotifs ? (
+                <p className="text-sm text-center text-school-black/50 py-8">Chargement...</p>
+              ) : userNotifications.length === 0 ? (
+                <Card>
+                  <CardContent className="py-12 text-center text-school-black/50">
+                    <Bell className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                    Aucune notification personnelle
+                  </CardContent>
+                </Card>
+              ) : (
+                <>
+                  {userNotifications.slice((notifPage - 1) * itemsPerPage, notifPage * itemsPerPage).map((notif) => (
+                    <Card key={notif.id} className={`border-l-4 shadow-sm ${notif.read_at ? 'border-gray-200 bg-gray-50/50' : 'border-school-yellow bg-white'}`}>
+                      <CardHeader className="pb-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            {getNotifTypeIcon(notif.type)}
+                            <CardTitle className={`text-base truncate ${notif.read_at ? 'text-gray-500 font-medium' : 'text-school-black font-semibold'}`}>
+                              {notif.title}
+                            </CardTitle>
+                          </div>
+                          <span className="text-[10px] text-school-black/50 shrink-0">
+                            {new Date(notif.created_at).toLocaleString('fr-FR', {
+                              day: 'numeric',
+                              month: 'short',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className={`text-sm whitespace-pre-wrap ${notif.read_at ? 'text-gray-500' : 'text-school-black/80'}`}>
+                          {notif.content}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  
+                  {userNotifications.length > itemsPerPage && (
+                    <div className="flex items-center justify-between pt-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={notifPage === 1}
+                        onClick={() => setNotifPage(p => Math.max(1, p - 1))}
+                      >
+                        Précédent
+                      </Button>
+                      <span className="text-sm text-school-black/60 font-medium">
+                        Page {notifPage} sur {Math.ceil(userNotifications.length / itemsPerPage)}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={notifPage >= Math.ceil(userNotifications.length / itemsPerPage)}
+                        onClick={() => setNotifPage(p => p + 1)}
+                      >
+                        Suivant
+                      </Button>
+                    </div>
+                  )}
+                </>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
     </div>
