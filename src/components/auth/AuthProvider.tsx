@@ -203,7 +203,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       toast({
         title: 'Inscription réussie',
-        description: 'Votre compte est en attente de validation par un administrateur.',
+        description: 'Un mail de validation a été envoyé à votre adresse mail, vérifiez-le.',
       })
 
       return { error: null }
