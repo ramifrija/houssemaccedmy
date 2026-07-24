@@ -163,6 +163,7 @@ export const AuthPage = () => {
                     onChange={(e) => setSignupPassword(e.target.value)}
                     placeholder="••••••••"
                     required
+                    minLength={8}
                     className="mt-1"
                   />
                 </div>

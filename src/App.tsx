@@ -34,6 +34,8 @@ const StudentDossierPage = lazy(() => import('./pages/StudentDossierPage'))
 const TeachersDossiersPage = lazy(() => import('./pages/TeachersDossiersPage'))
 const TeacherDossierPage = lazy(() => import('./pages/TeacherDossierPage'))
 const PaymentsPage = lazy(() => import('./pages/PaymentsPage'))
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
+const TermsOfService = lazy(() => import('./pages/TermsOfService'))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -168,6 +170,10 @@ const AppContent = () => {
                   <Route path="/parent-dashboard" element={<ParentDashboard />} />
                 </>
               )}
+
+              {/* Pages légales (accessibles à tous les rôles) */}
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>

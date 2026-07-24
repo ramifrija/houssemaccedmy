@@ -1,17 +1,17 @@
-
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Separator } from '@/components/ui/separator'
-import { Bell, Shield } from 'lucide-react'
+import { Bell, Shield, Trash2, FileText } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/components/auth/AuthProvider'
 import { Input } from '@/components/ui/input'
 import { supabase } from '@/integrations/supabase/client'
-
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { Link } from 'react-router-dom'
 const PREFS_KEY = 'houssem-app-prefs'
 
 type AppPrefs = {
@@ -37,6 +37,8 @@ const Settings = () => {
   const [lastName, setLastName] = useState(userProfile?.last_name || '')
   const [password, setPassword] = useState('')
   const [isUpdating, setIsUpdating] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteConfirmText, setDeleteConfirmText] = useState('')
 
   useEffect(() => {
     if (userProfile) {
@@ -147,6 +149,93 @@ const Settings = () => {
               >
                 Enregistrer
               </Button>
+            </CardContent>
+          </Card>
+
+          {/* Liens légaux */}
+          <Card className="border-school-yellow/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-school-black">
+                <FileText className="w-5 h-5" />
+                Informations légales
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Link to="/privacy-policy" className="block text-sm text-blue-600 hover:underline">
+                📄 Politique de confidentialité
+              </Link>
+              <Link to="/terms-of-service" className="block text-sm text-blue-600 hover:underline">
+                📋 Conditions d'utilisation
+              </Link>
+            </CardContent>
+          </Card>
+
+          {/* Suppression de compte */}
+          <Card className="border-red-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-red-600">
+                <Trash2 className="w-5 h-5" />
+                Zone dangereuse
+              </CardTitle>
+              <CardDescription>Actions irréversibles sur votre compte</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-school-black/70">
+                La suppression de votre compte est <strong>définitive et irréversible</strong>. Toutes vos données
+                personnelles, messages, notes et historique seront supprimés.
+              </p>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" className="gap-2">
+                    <Trash2 className="w-4 h-4" />
+                    Supprimer mon compte
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Supprimer définitivement votre compte ?</AlertDialogTitle>
+                    <AlertDialogDescription className="space-y-3">
+                      <p>Cette action est <strong>irréversible</strong>. Toutes vos données seront supprimées :</p>
+                      <ul className="list-disc ml-6 text-sm space-y-1">
+                        <li>Profil et informations personnelles</li>
+                        <li>Messages et conversations</li>
+                        <li>Notes et historique de présences</li>
+                        <li>Tous les liens avec les classes et cours</li>
+                      </ul>
+                      <p className="pt-2">Tapez <strong>{user?.email}</strong> pour confirmer :</p>
+                      <Input
+                        value={deleteConfirmText}
+                        onChange={(e) => setDeleteConfirmText(e.target.value)}
+                        placeholder="Tapez votre adresse e-mail ici..."
+                        className="border-red-200"
+                      />
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel onClick={() => setDeleteConfirmText('')}>Annuler</AlertDialogCancel>
+                    <AlertDialogAction
+                      disabled={deleteConfirmText !== user?.email || isDeleting}
+                      className="bg-red-600 hover:bg-red-700"
+                      onClick={async () => {
+                        setIsDeleting(true)
+                        try {
+                          const { error } = await supabase.rpc('delete_own_account')
+                          if (error) throw error
+                          toast({ title: 'Compte supprimé', description: 'Votre compte a été supprimé avec succès.' })
+                          window.location.replace('/')
+                        } catch (err: any) {
+                          toast({ variant: 'destructive', title: 'Erreur', description: err.message || 'Impossible de supprimer le compte' })
+                        } finally {
+                          setIsDeleting(false)
+                          setDeleteConfirmText('')
+                        }
+                      }}
+                    >
+                      {isDeleting ? 'Suppression...' : 'Supprimer définitivement'}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </CardContent>
           </Card>
         </div>

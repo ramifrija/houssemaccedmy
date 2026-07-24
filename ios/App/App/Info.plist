@@ -45,5 +45,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>L'application a besoin d'accéder à la caméra pour vous permettre de prendre des photos de profil ou de partager des images dans la messagerie.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>L'application a besoin d'accéder à vos photos pour vous permettre de choisir une photo de profil ou de partager des images existantes dans la messagerie.</string>
 </dict>
 </plist>
