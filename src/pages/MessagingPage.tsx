@@ -226,9 +226,9 @@ const MessagingPage = () => {
     },
     onMutate: async (content) => {
       await queryClient.cancelQueries({ queryKey: ['messages', selectedConversation] })
-      
+
       const previousMessages = queryClient.getQueryData(['messages', selectedConversation, messagesLimit])
-      
+
       queryClient.setQueryData(['messages', selectedConversation, messagesLimit], (old: any) => {
         const optimisticMsg = {
           id: `temp-${Date.now()}`,
@@ -244,7 +244,7 @@ const MessagingPage = () => {
       })
 
       setNewMessage('')
-      
+
       return { previousMessages }
     },
     onError: (err, newMsg, context) => {
@@ -266,20 +266,20 @@ const MessagingPage = () => {
         if (userProfile?.role === 'teacher' && teacherCourses.length > 1 && !selectedCourseId) {
           throw new Error('Veuillez choisir une matière')
         }
-        
+
         const cls = classes.find(c => c.classId.toString() === selectedClass)
         const className = cls ? cls.name : 'Classe'
-        
+
         let courseName = ''
         if (userProfile?.role === 'teacher' && selectedCourseId) {
           const course = teacherCourses.find(c => c.id === selectedCourseId)
           if (course) courseName = `${course.title} - `
         }
-        
+
         const creatorName = userProfile ? formatUserDisplayName(userProfile as any) : 'Professeur'
         const roleLabel = userProfile?.role === 'admin' ? 'Admin' : 'Prof'
         const customTitle = `${courseName}Classe ${className} - ${creatorName} (${roleLabel})`
-        
+
         return sendMessageToClass(Number(selectedClass), firstMessage.trim(), customTitle)
       }
 
@@ -312,8 +312,8 @@ const MessagingPage = () => {
         title: recipientType === 'class'
           ? 'Groupe de classe démarré'
           : selectedContactIds.length > 1
-          ? 'Groupe de discussion créé'
-          : 'Conversation démarrée'
+            ? 'Groupe de discussion créé'
+            : 'Conversation démarrée'
       })
     },
     onError: (error: Error) => {
@@ -381,20 +381,20 @@ const MessagingPage = () => {
       return false
     }
     return c.name.toLowerCase().includes(contactSearch.toLowerCase()) ||
-           c.role.toLowerCase().includes(contactSearch.toLowerCase())
+      c.role.toLowerCase().includes(contactSearch.toLowerCase())
   })
 
   // Choisir les conversations à afficher selon le mode Admin ou Utilisateur
   const displayedConversations: ConversationItem[] = isAdmin && adminMode === 'all'
     ? allAdminConversations.map((c) => ({
-        id: c.id,
-        name: c.name,
-        otherUserId: null,
-        lastMessage: c.lastMessage,
-        lastMessageAt: c.lastMessageAt,
-        role: 'admin',
-        isGroup: c.isGroup,
-      }))
+      id: c.id,
+      name: c.name,
+      otherUserId: null,
+      lastMessage: c.lastMessage,
+      lastMessageAt: c.lastMessageAt,
+      role: 'admin',
+      isGroup: c.isGroup,
+    }))
     : myConversations
 
   const filteredConversations = displayedConversations.filter((conv) =>
@@ -583,8 +583,8 @@ const MessagingPage = () => {
 
                     <div className="h-48 overflow-y-auto rounded-lg border border-school-yellow/20 bg-white">
                       {parents
-                        .filter((c) => 
-                          c.name.toLowerCase().includes(contactSearch.toLowerCase()) || 
+                        .filter((c) =>
+                          c.name.toLowerCase().includes(contactSearch.toLowerCase()) ||
                           c.childrenNames.toLowerCase().includes(contactSearch.toLowerCase())
                         )
                         .map((contact) => (
@@ -659,8 +659,8 @@ const MessagingPage = () => {
                   disabled={
                     !firstMessage.trim() ||
                     startNewChat.isPending ||
-                    (recipientType === 'individual' || recipientType === 'parent' ? 
-                      (selectedContactIds.length === 0 || (selectedContactIds.length > 1 && !groupTitle.trim())) 
+                    (recipientType === 'individual' || recipientType === 'parent' ?
+                      (selectedContactIds.length === 0 || (selectedContactIds.length > 1 && !groupTitle.trim()))
                       : (!selectedClass || (userProfile?.role === 'teacher' && teacherCourses.length > 1 && !selectedCourseId)))
                   }
                   onClick={() => startNewChat.mutate()}
@@ -673,8 +673,8 @@ const MessagingPage = () => {
                   {recipientType === 'class'
                     ? 'Créer le groupe de classe & envoyer'
                     : selectedContactIds.length > 1
-                    ? 'Créer le groupe de discussion'
-                    : 'Démarrer la conversation'}
+                      ? 'Créer le groupe de discussion'
+                      : 'Démarrer la conversation'}
                 </Button>
               </div>
             </DialogContent>
@@ -755,16 +755,16 @@ const MessagingPage = () => {
                 Aucune conversation trouvée.
               </p>
             ) : (
-            filteredConversations.map((conversation: any) => {
+              filteredConversations.map((conversation: any) => {
                 const unread = conversation.unreadCount ?? 0
                 const hasUnread = unread > 0 && selectedConversation !== conversation.id
-                
+
                 let avatarBgClass = "bg-school-yellow/20"
                 let iconClass = "text-school-black"
-                
+
                 const roleStr = conversation.role?.toLowerCase() || ''
                 const nameStr = conversation.name?.toLowerCase() || ''
-                
+
                 if (roleStr === 'admin' || nameStr.includes('(admin)')) {
                   avatarBgClass = "bg-blue-100"
                   iconClass = "text-blue-600"
@@ -774,43 +774,44 @@ const MessagingPage = () => {
                 }
 
                 return (
-                <div
-                  key={conversation.id}
-                  onClick={() => handleSelectConversation(conversation.id)}
-                  className={cn(
-                    'p-3.5 border-b cursor-pointer hover:bg-school-yellow/5 transition-colors',
-                    selectedConversation === conversation.id && 'bg-school-yellow/10 border-l-4 border-l-school-yellow',
-                    hasUnread && 'bg-blue-50/40'
-                  )}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="relative w-9 h-9 shrink-0">
-                        <div className={cn("w-9 h-9 rounded-full flex items-center justify-center", avatarBgClass)}>
-                          {conversation.isGroup ? (
-                            <Building2 className={cn("w-4 h-4", iconClass)} />
-                          ) : (
-                            <Users className={cn("w-4 h-4", iconClass)} />
+                  <div
+                    key={conversation.id}
+                    onClick={() => handleSelectConversation(conversation.id)}
+                    className={cn(
+                      'p-3.5 border-b cursor-pointer hover:bg-school-yellow/5 transition-colors',
+                      selectedConversation === conversation.id && 'bg-school-yellow/10 border-l-4 border-l-school-yellow',
+                      hasUnread && 'bg-blue-50/40'
+                    )}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="relative w-9 h-9 shrink-0">
+                          <div className={cn("w-9 h-9 rounded-full flex items-center justify-center", avatarBgClass)}>
+                            {conversation.isGroup ? (
+                              <Building2 className={cn("w-4 h-4", iconClass)} />
+                            ) : (
+                              <Users className={cn("w-4 h-4", iconClass)} />
+                            )}
+                          </div>
+                          {hasUnread && (
+                            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center shadow-sm">
+                              {unread > 99 ? '99+' : unread}
+                            </span>
                           )}
                         </div>
-                        {hasUnread && (
-                          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center shadow-sm">
-                            {unread > 99 ? '99+' : unread}
-                          </span>
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className={cn('text-sm truncate', hasUnread ? 'font-bold text-school-black' : 'font-medium text-school-black')}>
-                          {conversation.name}
-                        </p>
-                        <p className={cn('text-xs truncate mt-0.5', hasUnread ? 'text-school-black/80 font-medium' : 'text-school-black/60')}>
-                          {conversation.lastMessage || '—'}
-                        </p>
+                        <div className="min-w-0 flex-1">
+                          <p className={cn('text-sm truncate', hasUnread ? 'font-bold text-school-black' : 'font-medium text-school-black')}>
+                            {conversation.name}
+                          </p>
+                          <p className={cn('text-xs truncate mt-0.5', hasUnread ? 'text-school-black/80 font-medium' : 'text-school-black/60')}>
+                            {conversation.lastMessage || '—'}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )})
+                )
+              })
             )}
           </div>
         </div>
@@ -978,11 +979,11 @@ const MessagingPage = () => {
           )}
         </div>
       </div>
-      
-      <CreatePollDialog 
-        open={createPollOpen} 
-        onOpenChange={setCreatePollOpen} 
-        onSendPoll={handleSendPoll} 
+
+      <CreatePollDialog
+        open={createPollOpen}
+        onOpenChange={setCreatePollOpen}
+        onSendPoll={handleSendPoll}
       />
     </>
   )
