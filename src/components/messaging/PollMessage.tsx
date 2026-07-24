@@ -58,7 +58,12 @@ export function PollMessage({ messageId, senderName, sentAt, isOwn, metadata }: 
 
   useEffect(() => {
     loadVotes()
-    // A real app might subscribe to real-time changes here
+    
+    const interval = setInterval(() => {
+      loadVotes()
+    }, 3000)
+
+    return () => clearInterval(interval)
   }, [messageId, user?.id])
 
   const handleVote = async (index: number) => {
