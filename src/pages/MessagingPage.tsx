@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -50,6 +50,8 @@ import { queryKeys } from '@/lib/query-keys'
 
 const MessagingPage = () => {
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
   const [newMessage, setNewMessage] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [messagesLimit, setMessagesLimit] = useState(25)
@@ -77,6 +79,7 @@ const MessagingPage = () => {
   const { data: myConversations = [], isLoading: loadingMyConvs } = useQuery({
     queryKey: queryKeys.conversations,
     queryFn: fetchMyConversations,
+    refetchInterval: 3000,
   })
 
   // Toutes les conversations (Supervision Admin)
@@ -102,7 +105,12 @@ const MessagingPage = () => {
     queryKey: selectedConversation ? ['messages', selectedConversation, messagesLimit] : ['messages', 'none'],
     enabled: !!selectedConversation && !!user?.id,
     queryFn: () => fetchMessages(selectedConversation!, user!.id, messagesLimit, 0),
+    refetchInterval: 3000,
   })
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   // Souscription Realtime pour les messages dans la conversation active
   useEffect(() => {
@@ -189,7 +197,34 @@ const MessagingPage = () => {
       if (!selectedConversation || !user?.id) throw new Error('Conversation invalide')
       await sendMessage(selectedConversation, user.id, content)
     },
-    onSuccess: async () => {
+    onMutate: async (content) => {
+      await queryClient.cancelQueries({ queryKey: ['messages', selectedConversation] })
+      
+      const previousMessages = queryClient.getQueryData(['messages', selectedConversation, messagesLimit])
+      
+      queryClient.setQueryData(['messages', selectedConversation, messagesLimit], (old: any) => {
+        const optimisticMsg = {
+          id: `temp-${Date.now()}`,
+          senderId: user?.id,
+          senderName: 'Moi',
+          content,
+          sentAt: new Date().toISOString(),
+          isOwn: true,
+          type: 'text',
+          metadata: null,
+        }
+        return old ? [...old, optimisticMsg] : [optimisticMsg]
+      })
+
+      setNewMessage('')
+      
+      return { previousMessages }
+    },
+    onError: (err, newMsg, context) => {
+      queryClient.setQueryData(['messages', selectedConversation, messagesLimit], context?.previousMessages)
+      toast({ variant: 'destructive', title: 'Erreur', description: "Le message n'a pas pu être envoyé" })
+    },
+    onSettled: async () => {
       await queryClient.invalidateQueries({ queryKey: ['messages', selectedConversation] })
       await queryClient.invalidateQueries({ queryKey: queryKeys.conversations })
     },
@@ -719,6 +754,7 @@ const MessagingPage = () => {
                         )}
                       </div>
                     ))}
+                    <div ref={messagesEndRef} />
                   </>
                 )}
               </div>
