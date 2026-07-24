@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { supabase } from '@/integrations/supabase/client'
 import { useToast } from '@/hooks/use-toast'
 import { formatUserDisplayName } from '@/lib/display-user-name'
-import { DollarSign, Bell, CheckCircle, AlertTriangle, Trash2 } from 'lucide-react'
+import { DollarSign, Bell, CheckCircle, AlertTriangle, Trash2, BookOpen, Users } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { PageContent } from '@/components/layout/PageContent'
 import { useQuery } from '@tanstack/react-query'
@@ -347,10 +347,16 @@ export default function PaymentsPage() {
                   <Button
                     key={cls.id}
                     variant="outline"
-                    className="h-20 flex flex-col items-center justify-center text-school-black border-school-yellow/30 hover:border-school-yellow hover:bg-school-yellow/10 transition-colors"
+                    className="h-auto min-h-[6rem] flex items-center justify-start gap-4 p-4 text-school-black border-school-yellow/30 hover:border-school-yellow hover:bg-school-yellow/10 transition-all rounded-xl"
                     onClick={() => handleSetListClassId(cls.id)}
                   >
-                    <span className="font-semibold text-lg">{cls.name}</span>
+                    <div className="w-12 h-12 rounded-full bg-school-yellow/20 flex items-center justify-center text-school-yellow-dark flex-shrink-0">
+                      <BookOpen className="w-6 h-6" />
+                    </div>
+                    <div className="flex flex-col items-start min-w-0">
+                      <span className="font-bold text-base sm:text-lg text-left whitespace-normal leading-tight mb-1">{cls.name}</span>
+                      <span className="text-sm text-school-black/60 font-medium">Sélectionner</span>
+                    </div>
                   </Button>
                 ))}
                 {filteredClasses.length === 0 && (
@@ -367,17 +373,30 @@ export default function PaymentsPage() {
                 ) : filteredStudents.length === 0 ? (
                   <p className="text-sm text-center py-6 text-school-black/50">Aucun élève trouvé.</p>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    {filteredStudents.map((student) => (
-                      <Button
-                        key={student.user_id}
-                        variant="outline"
-                        className="justify-start text-left h-auto py-3 border-school-yellow/30 hover:border-school-yellow hover:bg-school-yellow/10 transition-colors"
-                        onClick={() => setSelectedStudentForPayments({ id: student.user_id, name: formatUserDisplayName(student) })}
-                      >
-                        {formatUserDisplayName(student)}
-                      </Button>
-                    ))}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {filteredStudents.map((student) => {
+                      const name = formatUserDisplayName(student)
+                      const initials = name.substring(0, 2).toUpperCase() || '?'
+                      const colors = ['bg-violet-500','bg-blue-500','bg-emerald-500','bg-rose-500','bg-amber-500','bg-cyan-500','bg-pink-500','bg-indigo-500']
+                      const color = colors[student.user_id.charCodeAt(0) % colors.length]
+
+                      return (
+                        <Button
+                          key={student.user_id}
+                          variant="outline"
+                          className="justify-start text-left h-auto py-3 px-4 border-slate-200 hover:border-school-yellow hover:bg-school-yellow/5 transition-all rounded-xl gap-3"
+                          onClick={() => setSelectedStudentForPayments({ id: student.user_id, name })}
+                        >
+                          <div className={`w-10 h-10 rounded-full ${color} flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-sm`}>
+                            {initials}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-semibold text-slate-800 text-sm leading-tight truncate">{name}</p>
+                            <p className="text-xs text-slate-500 truncate mt-0.5">Gérer les paiements</p>
+                          </div>
+                        </Button>
+                      )
+                    })}
                   </div>
                 )}
               </div>
@@ -480,7 +499,7 @@ export default function PaymentsPage() {
                     <TableBody>
                       {payments.map((p) => (
                         <TableRow key={p.id}>
-                          <TableCell className="font-bold text-school-black">{p.amount} DT</TableCell>
+                          <TableCell className="font-bold text-green-700 text-base">{p.amount} DT</TableCell>
                           <TableCell className="text-sm">
                             {new Date(p.payment_date).toLocaleDateString('fr-FR')}
                           </TableCell>

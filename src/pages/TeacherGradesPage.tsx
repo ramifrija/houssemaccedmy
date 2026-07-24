@@ -38,7 +38,7 @@ import { useAuth } from '@/components/auth/AuthProvider'
 import { useToast } from '@/hooks/use-toast'
 import { createGrade, deleteGrade, fetchAllGrades, fetchGradesForTeacher } from '@/lib/grades-api'
 import { fetchClassStudents, fetchClasses, fetchCoursesForClass, fetchTeacherClasses } from '@/lib/classes-api'
-import { Plus, Trash2, Check, ChevronsUpDown } from 'lucide-react'
+import { Plus, Trash2, Check, ChevronsUpDown, BookOpen, GraduationCap } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 function SearchableSelect({ 
@@ -417,13 +417,18 @@ const TeacherGradesPage = () => {
                   <Button
                     key={cls.id}
                     variant="outline"
-                    className="h-20 flex flex-col items-center justify-center text-school-black border-school-yellow/30 hover:border-school-yellow hover:bg-school-yellow/10 transition-colors"
+                    className="h-auto min-h-[6rem] flex items-center justify-start gap-4 p-4 text-school-black border-school-yellow/30 hover:border-school-yellow hover:bg-school-yellow/10 transition-all rounded-xl"
                     onClick={() => handleSetListClassId(cls.id)}
                   >
-                    <span className="font-semibold text-lg">{cls.name}</span>
-                    <span className="text-sm text-school-black/60">
-                      {(cls as any).studentCount !== undefined ? `${(cls as any).studentCount} élève(s)` : ''}
-                    </span>
+                    <div className="w-12 h-12 rounded-full bg-school-yellow/20 flex items-center justify-center text-school-yellow-dark flex-shrink-0">
+                      <BookOpen className="w-6 h-6" />
+                    </div>
+                    <div className="flex flex-col items-start min-w-0">
+                      <span className="font-bold text-base sm:text-lg text-left whitespace-normal leading-tight mb-1">{cls.name}</span>
+                      <span className="text-sm text-school-black/60 font-medium">
+                        {(cls as any).studentCount !== undefined ? `${(cls as any).studentCount} élève(s)` : 'Sélectionner'}
+                      </span>
+                    </div>
                   </Button>
                 ))}
                 {filteredClasses.length === 0 && (
@@ -440,17 +445,29 @@ const TeacherGradesPage = () => {
                 ) : filteredStudents.length === 0 ? (
                   <p className="text-sm text-center py-6 text-school-black/50">Aucun élève trouvé.</p>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    {filteredStudents.map((student) => (
-                      <Button
-                        key={student.userId}
-                        variant="outline"
-                        className="justify-start text-left h-auto py-3"
-                        onClick={() => setSelectedStudentForGrades({ id: student.userId, name: student.name })}
-                      >
-                        {student.name}
-                      </Button>
-                    ))}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {filteredStudents.map((student) => {
+                      const initials = (student.name ?? '').substring(0, 2).toUpperCase() || '?'
+                      const colors = ['bg-violet-500','bg-blue-500','bg-emerald-500','bg-rose-500','bg-amber-500','bg-cyan-500','bg-pink-500','bg-indigo-500']
+                      const color = colors[student.userId.charCodeAt(0) % colors.length]
+                      
+                      return (
+                        <Button
+                          key={student.userId}
+                          variant="outline"
+                          className="justify-start text-left h-auto py-3 px-4 border-slate-200 hover:border-school-yellow hover:bg-school-yellow/5 transition-all rounded-xl gap-3"
+                          onClick={() => setSelectedStudentForGrades({ id: student.userId, name: student.name })}
+                        >
+                          <div className={`w-10 h-10 rounded-full ${color} flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-sm`}>
+                            {initials}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-semibold text-slate-800 text-sm leading-tight truncate">{student.name}</p>
+                            <p className="text-xs text-slate-500 truncate mt-0.5">Cliquez pour voir les notes</p>
+                          </div>
+                        </Button>
+                      )
+                    })}
                   </div>
                 )}
               </div>
@@ -508,25 +525,31 @@ const TeacherGradesPage = () => {
 
                     {courseNotes.length > 0 && (
                       <div className="space-y-2">
-                        {courseNotes.map(note => (
-                          <div key={note.id} className="flex flex-wrap items-center justify-between text-sm p-2 bg-school-gray-light rounded-md">
-                            <div>
-                              <span className="font-medium text-school-black">{note.score}/{note.maxScore}</span>
-                              {note.term && <span className="text-school-black/70 ml-2">({note.term})</span>}
+                        {courseNotes.map(note => {
+                          const isHigh = note.score >= (note.maxScore * 0.75)
+                          const isLow = note.score < (note.maxScore * 0.5)
+                          return (
+                            <div key={note.id} className="flex flex-wrap items-center justify-between text-sm p-2.5 bg-slate-50 rounded-md border border-slate-100">
+                              <div className="flex items-center gap-2">
+                                <div className={`px-2 py-1 rounded-md font-bold text-sm shadow-sm ${isHigh ? 'bg-green-100 text-green-800 border border-green-200' : isLow ? 'bg-red-100 text-red-800 border border-red-200' : 'bg-amber-100 text-amber-800 border border-amber-200'}`}>
+                                  {note.score}/{note.maxScore}
+                                </div>
+                                {note.term && <span className="text-slate-600 text-xs font-medium bg-white px-2 py-1 rounded-md border border-slate-200">{note.term}</span>}
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <span className="text-xs text-slate-400">{new Date(note.createdAt).toLocaleDateString('fr-FR')}</span>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 hover:bg-red-50"
+                                  onClick={() => removeGrade.mutate(note.id)}
+                                >
+                                  <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                                </Button>
+                              </div>
                             </div>
-                            <div className="flex items-center gap-4">
-                              <span className="text-xs text-school-black/50">{new Date(note.createdAt).toLocaleDateString('fr-FR')}</span>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-6 w-6"
-                                onClick={() => removeGrade.mutate(note.id)}
-                              >
-                                <Trash2 className="w-3.5 h-3.5 text-red-500" />
-                              </Button>
-                            </div>
-                          </div>
-                        ))}
+                          )
+                        })}
                       </div>
                     )}
 
