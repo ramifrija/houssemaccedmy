@@ -147,7 +147,7 @@ const Users = () => {
   }
 
   const handleToggleStatus = async (user: UserRow) => {
-    const newStatus = user.status === 'approved' ? 'suspended' : 'approved'
+    const newStatus = user.status === 'approved' ? 'rejected' : 'approved'
     try {
       await updateUserStatus(user.user_id, newStatus)
       toast({
@@ -166,7 +166,7 @@ const Users = () => {
 
   const renderStatusBadge = (status: string | null | undefined) => {
     if (status === 'approved') return <Badge className="bg-green-100 text-green-800 border-green-200">Approuvé</Badge>
-    if (status === 'suspended') return <Badge className="bg-red-100 text-red-800 border-red-200">Suspendu</Badge>
+    if (status === 'rejected') return <Badge className="bg-red-100 text-red-800 border-red-200">Suspendu</Badge>
     return <Badge variant="outline" className="border-amber-400 text-amber-700 bg-amber-50">En attente</Badge>
   }
 

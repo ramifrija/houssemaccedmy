@@ -169,7 +169,7 @@ export async function updateUser(input: UpdateUserInput) {
   }
 }
 
-export async function updateUserStatus(userId: string, status: 'approved' | 'pending' | 'suspended') {
+export async function updateUserStatus(userId: string, status: 'approved' | 'pending' | 'rejected') {
   const { error } = await supabase
     .from('profiles')
     .update({ status })

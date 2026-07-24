@@ -82,6 +82,7 @@ async function createViaEphemeralSignup(input: AdminCreateUserInput) {
     return { userId: null, error: new Error('Compte créé mais identifiant introuvable.') }
   }
 
+  const userId = signUpData.user.id
   const profileCreated = await waitForProfile(userId)
   if (!profileCreated) {
     return { userId: null, error: new Error("L'email est probablement déjà utilisé ou la création a échoué silencieusement.") }
@@ -140,8 +141,9 @@ export async function adminCreateUser(input: AdminCreateUserInput) {
   }
 
   if (userId) {
-    // Force status to approved directly from client to avoid waiting for server redeployments
-    await supabase.from('profiles').update({ status: 'approved' }).eq('user_id', userId)
+    // Force status to approved and correct role directly from client
+    const finalRoleId = await resolveRoleId(supabase, input.role)
+    await supabase.from('profiles').update({ status: 'approved', role_id: finalRoleId }).eq('user_id', userId)
     return { userId, error: null }
   }
 
