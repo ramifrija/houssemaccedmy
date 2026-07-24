@@ -32,7 +32,7 @@ export function PollMessage({ messageId, senderName, sentAt, isOwn, metadata }: 
   const isAdmin = userProfile?.role === 'admin'
   const question = metadata?.question || 'Sondage'
   const options = metadata?.options || []
-  
+
   const [pollStats, setPollStats] = useState<Record<number, { voteCount: number; voters: { id: string; name: string }[] }>>({})
   const [hasVoted, setHasVoted] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
@@ -90,41 +90,38 @@ export function PollMessage({ messageId, senderName, sentAt, isOwn, metadata }: 
               const stat = pollStats[index] || { voteCount: 0, voters: [] }
               const percentage = totalVotes > 0 ? Math.round((stat.voteCount / totalVotes) * 100) : 0
               const isVoted = hasVoted === index
-              
+
               return (
                 <div key={index} className="space-y-1">
                   <button
                     onClick={() => handleVote(index)}
                     disabled={loading}
-                    className={`relative w-full text-left overflow-hidden rounded-md border transition-all duration-200 ${
-                      isVoted ? 'border-primary ring-1 ring-primary' : 'border-gray-200 hover:border-primary/50'
-                    }`}
+                    className={`relative w-full text-left overflow-hidden rounded-md border transition-all duration-200 ${isVoted ? 'border-primary ring-1 ring-primary' : 'border-gray-200 hover:border-primary/50'
+                      }`}
                   >
                     {/* Background progress bar */}
                     {totalVotes > 0 && (
-                      <div 
-                        className={`absolute top-0 left-0 h-full transition-all duration-500 ease-out ${
-                          isVoted ? 'bg-primary/20' : 'bg-gray-100/80'
-                        }`}
+                      <div
+                        className={`absolute top-0 left-0 h-full transition-all duration-500 ease-out ${isVoted ? 'bg-primary/20' : 'bg-gray-100/80'
+                          }`}
                         style={{ width: `${percentage}%` }}
                       />
                     )}
-                    
+
                     {/* Content (Z-index above progress) */}
                     <div className="relative z-10 flex items-center justify-between p-3 gap-3">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         {/* Custom Checkbox/Radio circle */}
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-                          isVoted ? 'border-primary' : 'border-gray-300'
-                        }`}>
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${isVoted ? 'border-primary' : 'border-gray-300'
+                          }`}>
                           {isVoted && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                         </div>
-                        
+
                         <span className={`text-sm font-medium truncate ${isVoted ? 'text-primary' : 'text-gray-700'}`}>
                           {opt}
                         </span>
                       </div>
-                      
+
                       {totalVotes > 0 && (
                         <span className={`text-xs font-semibold shrink-0 ${isVoted ? 'text-primary' : 'text-gray-500'}`}>
                           {percentage}%
@@ -144,7 +141,7 @@ export function PollMessage({ messageId, senderName, sentAt, isOwn, metadata }: 
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-md">
                           <DialogHeader>
-                            <DialogTitle className="text-base font-semibold">Votants pour "{opt}"</DialogTitle>
+                            <DialogTitle className="text-base font-semibold">Votants pour s "{opt}"</DialogTitle>
                           </DialogHeader>
                           <div className="max-h-60 overflow-y-auto mt-2 space-y-2">
                             {stat.voters.map((v, i) => (
