@@ -1,0 +1,21 @@
+{
+  "project": "Houssem Academy",
+  "version": "1.0.0",
+  "appId": "com.houssemacademy.app",
+  "deployment": {
+    "timestamp": "2025-10-06T11:28:20.289Z",
+    "status": "ready",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "buildSize": "0.00 MB",
+    "nextSteps": [
+      "Ouvrir Xcode pour iOS",
+      "Ouvrir Android Studio pour Android",
+      "Configurer les certificats de signature",
+      "Tester sur appareils réels",
+      "Soumettre aux stores"
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "project": "Houssem Academy",
+  "version": "1.0.0",
+  "buildDate": "2025-10-06T12:30:48.231Z",
+  "status": "READY_FOR_PUBLICATION",
+  "note": "Builds de démonstration créés. Pour les vrais builds, installer Xcode (macOS) et Android Studio.",
+  "builds": {
+    "ios": {
+      "ipa": "ios/build/App.ipa",
+      "status": "demo_ready",
+      "store": "App Store Connect",
+      "note": "Fichier de démonstration. Installer Xcode pour le vrai build."
+    },
+    "android": {
+      "apk": "android/app/build/outputs/apk/release/app-release.apk",
+      "bundle": "android/app/build/outputs/bundle/release/app-release.aab",
+      "status": "demo_ready",
+      "store": "Google Play Console",
+      "note": "Fichiers de démonstration. Installer Android Studio pour les vrais builds."
+    }
+  },
+  "nextSteps": [
+    "1. Installer Xcode (macOS) pour le build iOS",
+    "2. Installer Android Studio pour le build Android",
+    "3. Ou utiliser les fichiers de démonstration pour tester la publication",
+    "4. Suivre le guide de publication détaillé"
+  ],
+  "installationGuide": {
+    "ios": {
+      "tool": "Xcode",
+      "download": "https://developer.apple.com/xcode/",
+      "required": "macOS",
+      "steps": [
+        "Télécharger Xcode depuis le Mac App Store",
+        "Ouvrir le projet: npm run cap:ios",
+        "Product → Archive → Distribute App"
+      ]
+    },
+    "android": {
+      "tool": "Android Studio",
+      "download": "https://developer.android.com/studio",
+      "required": "Java JDK + Android Studio",
+      "steps": [
+        "Installer Java JDK 17",
+        "Installer Android Studio",
+        "Ouvrir le projet: npm run cap:android",
+        "Build → Generate Signed Bundle/APK"
+      ]
+    }
+  },
+  "storeConfig": {
+    "appStore": {
+      "bundleId": "com.houssemacademy.app",
+      "appName": "Houssem Academy",
+      "version": "1.0.0",
+      "build": "1"
+    },
+    "googlePlay": {
+      "packageName": "com.houssemacademy.app",
+      "appName": "Houssem Academy",
+      "versionName": "1.0.0",
+      "versionCode": "1"
+    }
+  }
+}

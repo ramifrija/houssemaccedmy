@@ -1,0 +1,24 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond noir -->
+  <rect width="512" height="512" fill="#1A1A1A" rx="80"/>
+  
+  <!-- Cercle jaune -->
+  <circle cx="256" cy="256" r="180" fill="#FFD700"/>
+  
+  <!-- Lettre H stylisée en noir -->
+  <text x="256" y="336" 
+        font-family="Arial Black, sans-serif" 
+        font-size="280" 
+        font-weight="bold" 
+        fill="#1A1A1A" 
+        text-anchor="middle">H</text>
+  
+  <!-- Petit texte Academy en jaune en bas -->
+  <text x="256" y="462" 
+        font-family="Arial, sans-serif" 
+        font-size="40" 
+        font-weight="bold" 
+        fill="#FFD700" 
+        text-anchor="middle">ACADEMY</text>
+</svg>
+

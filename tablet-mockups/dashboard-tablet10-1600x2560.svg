@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1600" height="2560" viewBox="0 0 1600 2560" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond blanc -->
+  <rect width="1600" height="2560" fill="#FFFFFF"/>
+  
+  <!-- Header avec logo -->
+  <rect x="0" y="0" width="1600" height="180" fill="#1A1A1A"/>
+  <circle cx="100" cy="90" r="35" fill="#FFD700"/>
+  <path d="M75,75 L125,75 M75,85 L125,85 M75,95 L125,95 M75,105 L125,105" stroke="#1A1A1A" stroke-width="4"/>
+  <text x="150" y="70" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#FFD700">Houssem Academy</text>
+  <text x="150" y="105" font-family="Arial, sans-serif" font-size="20" fill="#FFFFFF">Administration</text>
+  
+  <!-- Bouton menu hamburger -->
+  <rect x="1400" y="60" width="100" height="60" fill="none" stroke="#FFD700" stroke-width="4" rx="12"/>
+  <line x1="1420" y1="80" x2="1480" y2="80" stroke="#FFD700" stroke-width="5"/>
+  <line x1="1420" y1="100" x2="1480" y2="100" stroke="#FFD700" stroke-width="5"/>
+  <line x1="1420" y1="120" x2="1480" y2="120" stroke="#FFD700" stroke-width="5"/>
+  
+  <!-- Titre de la page -->
+  <text x="800" y="270" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Tableau de Bord</text>
+  <text x="800" y="310" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#666666">Vue d'ensemble de l'établissement</text>
+  
+  <!-- Cartes de statistiques (4 en ligne) -->
+  <!-- Carte 1 -->
+  <rect x="100" y="350" width="320" height="200" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="20"/>
+  <circle cx="180" cy="430" r="30" fill="#3B82F6"/>
+  <text x="250" y="410" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#1A1A1A">0</text>
+  <text x="250" y="440" font-family="Arial, sans-serif" font-size="18" fill="#666666">Total Élèves</text>
+  
+  <!-- Carte 2 -->
+  <rect x="450" y="350" width="320" height="200" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="20"/>
+  <circle cx="530" cy="430" r="30" fill="#10B981"/>
+  <text x="600" y="410" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#1A1A1A">0</text>
+  <text x="600" y="440" font-family="Arial, sans-serif" font-size="18" fill="#666666">Présences</text>
+  
+  <!-- Carte 3 -->
+  <rect x="800" y="350" width="320" height="200" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="20"/>
+  <circle cx="880" cy="430" r="30" fill="#F59E0B"/>
+  <text x="950" y="410" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#1A1A1A">0</text>
+  <text x="950" y="440" font-family="Arial, sans-serif" font-size="18" fill="#666666">Cours Aujourd'hui</text>
+  
+  <!-- Carte 4 -->
+  <rect x="1150" y="350" width="320" height="200" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="20"/>
+  <circle cx="1230" cy="430" r="30" fill="#8B5CF6"/>
+  <text x="1300" y="410" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#1A1A1A">-</text>
+  <text x="1300" y="440" font-family="Arial, sans-serif" font-size="18" fill="#666666">Taux Présence</text>
+  
+  <!-- Section Activités Récentes -->
+  <rect x="100" y="580" width="1400" height="450" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="20"/>
+  <text x="150" y="620" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1A1A1A">Activités Récentes</text>
+  <text x="150" y="655" font-family="Arial, sans-serif" font-size="18" fill="#666666">Dernières actions dans le système</text>
+  
+  <!-- Activités en 3 colonnes -->
+  <!-- Colonne 1 -->
+  <circle cx="180" cy="720" r="6" fill="#FFD700"/>
+  <text x="210" y="730" font-family="Arial, sans-serif" font-size="20" fill="#1A1A1A">Ahmed Benali s'est connecté</text>
+  <text x="210" y="760" font-family="Arial, sans-serif" font-size="16" fill="#666666">Il y a 5 min</text>
+  
+  <circle cx="180" cy="820" r="6" fill="#FFD700"/>
+  <text x="210" y="830" font-family="Arial, sans-serif" font-size="20" fill="#1A1A1A">Cours Mathématiques terminé</text>
+  <text x="210" y="860" font-family="Arial, sans-serif" font-size="16" fill="#666666">Il y a 15 min</text>
+  
+  <!-- Colonne 2 -->
+  <circle cx="750" cy="720" r="6" fill="#FFD700"/>
+  <text x="780" y="730" font-family="Arial, sans-serif" font-size="20" fill="#1A1A1A">3 absences signalées</text>
+  <text x="780" y="760" font-family="Arial, sans-serif" font-size="16" fill="#666666">Il y a 30 min</text>
+  
+  <circle cx="750" cy="820" r="6" fill="#FFD700"/>
+  <text x="780" y="830" font-family="Arial, sans-serif" font-size="20" fill="#1A1A1A">Nouveau professeur ajouté</text>
+  <text x="780" y="860" font-family="Arial, sans-serif" font-size="16" fill="#666666">Il y a 1h</text>
+  
+  <!-- Colonne 3 -->
+  <circle cx="1320" cy="720" r="6" fill="#FFD700"/>
+  <text x="1350" y="730" font-family="Arial, sans-serif" font-size="20" fill="#1A1A1A">Export de données réussi</text>
+  <text x="1350" y="760" font-family="Arial, sans-serif" font-size="16" fill="#666666">Il y a 2h</text>
+  
+  <circle cx="1320" cy="820" r="6" fill="#FFD700"/>
+  <text x="1350" y="830" font-family="Arial, sans-serif" font-size="20" fill="#1A1A1A">Rapport mensuel généré</text>
+  <text x="1350" y="860" font-family="Arial, sans-serif" font-size="16" fill="#666666">Il y a 3h</text>
+  
+  <!-- Actions Rapides -->
+  <rect x="100" y="1060" width="1400" height="250" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="20"/>
+  <text x="150" y="1100" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1A1A1A">Actions Rapides</text>
+  <text x="150" y="1135" font-family="Arial, sans-serif" font-size="18" fill="#666666">Raccourcis fréquemment utilisés</text>
+  
+  <!-- Boutons d'action (4 en ligne) -->
+  <rect x="150" y="1160" width="280" height="100" fill="#FFD700" rx="15"/>
+  <text x="290" y="1220" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Ajouter un élève</text>
+  
+  <rect x="460" y="1160" width="280" height="100" fill="#FFD700" rx="15"/>
+  <text x="600" y="1220" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Marquer présences</text>
+  
+  <rect x="770" y="1160" width="280" height="100" fill="#FFD700" rx="15"/>
+  <text x="910" y="1220" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Créer un cours</text>
+  
+  <rect x="1080" y="1160" width="280" height="100" fill="#FFD700" rx="15"/>
+  <text x="1220" y="1220" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Export CSV</text>
+  
+  <!-- Navigation tablette en bas -->
+  <rect x="0" y="2300" width="1600" height="260" fill="#1A1A1A"/>
+  <circle cx="320" cy="2430" r="40" fill="#FFD700"/>
+  <circle cx="640" cy="2430" r="40" fill="#666666"/>
+  <circle cx="960" cy="2430" r="40" fill="#666666"/>
+  <circle cx="1280" cy="2430" r="40" fill="#666666"/>
+</svg>

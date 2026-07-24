@@ -1,0 +1,62 @@
+{
+  "project": "Houssem Academy",
+  "version": "1.0.0",
+  "buildDate": "2025-10-07T10:01:49.150Z",
+  "status": "ready_for_production",
+  "assets": {
+    "icons": {
+      "ios": [
+        "icon-1024.png",
+        "icon-180.png",
+        "icon-120.png",
+        "icon-167.png",
+        "icon-152.png",
+        "icon-76.png"
+      ],
+      "android": [
+        "icon-512.png",
+        "icon-192.png",
+        "icon-144.png",
+        "icon-96.png",
+        "icon-72.png",
+        "icon-48.png",
+        "icon-36.png"
+      ]
+    },
+    "splashScreens": {
+      "ios": [
+        "splash-750x1334.png",
+        "splash-1125x2436.png",
+        "splash-1242x2688.png",
+        "splash-1668x2388.png",
+        "splash-2048x2732.png"
+      ],
+      "android": [
+        "splash-480x800.png",
+        "splash-720x1280.png",
+        "splash-1080x1920.png"
+      ]
+    }
+  },
+  "nextSteps": [
+    "Générer le build iOS dans Xcode",
+    "Générer le build Android dans Android Studio",
+    "Télécharger les builds vers les stores",
+    "Soumettre pour review",
+    "Publier sur les stores"
+  ],
+  "storeConfig": {
+    "appStore": {
+      "bundleId": "com.houssemacademy.app",
+      "appName": "Houssem Academy",
+      "version": "1.0.0",
+      "build": "1"
+    },
+    "googlePlay": {
+      "packageName": "com.houssemacademy.app",
+      "appName": "Houssem Academy",
+      "versionName": "1.0.0",
+      "versionCode": "1"
+    }
+  }
+}

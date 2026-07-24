@@ -1,0 +1,97 @@
+{
+  "timestamp": "2025-10-06T15:31:24.265Z",
+  "application": "Houssem Academy",
+  "version": "1.0.0",
+  "tests": [
+    {
+      "name": "Build Web",
+      "status": "success",
+      "details": {
+        "distFolder": true,
+        "indexFile": true,
+        "buildOutput": "\n> vite_react_shadcn_ts@0.0.0 build:prod\n> vite build --mode production\n\n\u001b[36mvite v5.4.10 \u001b[32mbuilding for production...\u001b[36m\u001b[39m\ntransforming...\n\u001b[32m✓\u001b[39m 3461 modules transformed.\nrendering chunks...\ncomputing gzip size...\n\u001b[2mdist/\u001b[22m\u001b[32mindex.html                 \u001b[39m\u001b[1m\u001b[2m    1.31 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:   0.56 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[35massets/index-Kl35fcqF.css  \u001b[39m\u001b[1m\u001b[2m   68.35 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  11.80 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/index-e8QGju8L.js   \u001b[39m\u001b[1m\u001b[33m1,120.23 kB\u001b[39m\u001b[22m\u001b[2m │ gzip: 312.27 kB\u001b[22m\n\u001b[32m✓ built in 8.28s\u001b[39m"
+      }
+    },
+    {
+      "name": "Capacitor Sync",
+      "status": "success",
+      "details": {
+        "syncSuccess": true,
+        "androidAssets": true,
+        "iosAssets": true,
+        "output": "√ Copying web assets from dist to android\\app\\src\\main\\assets\\public in 12.68ms\n√ Creating capacitor.config.json in android\\app\\src\\main\\assets in 1.39ms\n√ copy android in 57.37ms\n√ Updating Android plugins in 10.76ms\n√ update android in 87.88ms\n√ Copying web assets from dist to ios\\App\\App\\public in 9.45ms\n√ Creating capacitor.config.json in ios\\App\\App in 676.60μs\n√ copy ios in 71.76ms\n√ Updating iOS plugins in 12.66ms\n[warn] Skipping pod install because CocoaPods is not installed\n[warn] Unable to find \"xcodebuild\". Skipping xcodebuild clean step...\n√ Updating iOS native dependencies with pod install in 15.97ms\n√ update ios in 117.75ms\n√ copy web in 25.10ms\n√ update web in 23.79ms\n[info] Sync finished in 0.506s"
+      }
+    },
+    {
+      "name": "Builds Android",
+      "status": "success",
+      "details": {
+        "debugAPK": {
+          "exists": true,
+          "size": "4.34 MB"
+        },
+        "releaseAPK": {
+          "exists": true,
+          "size": "3.33 MB"
+        },
+        "releaseAAB": {
+          "exists": true,
+          "size": "3.16 MB"
+        }
+      }
+    },
+    {
+      "name": "Assets et Ressources",
+      "status": "success",
+      "details": {
+        "icon1024": true,
+        "splashScreens": true,
+        "keystore": true,
+        "androidIcons": true,
+        "iosIcons": true
+      }
+    },
+    {
+      "name": "Configuration",
+      "status": "success",
+      "details": {
+        "packageVersion": "0.0.0",
+        "appName": "vite_react_shadcn_ts",
+        "dependencies": 56,
+        "devDependencies": 17,
+        "capacitorConfig": true,
+        "environmentVariables": 0,
+        "hasEnvVars": false
+      }
+    },
+    {
+      "name": "Qualité du Code",
+      "status": "warning",
+      "details": {
+        "lintingSuccess": false,
+        "sourceFiles": 88,
+        "lintOutput": "",
+        "hasErrors": false
+      }
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "passed": 5,
+    "failed": 0,
+    "warnings": 1
+  },
+  "readiness": {
+    "webBuild": true,
+    "mobileBuilds": true,
+    "assets": true,
+    "configuration": true,
+    "readyForPublication": true
+  },
+  "nextSteps": [
+    "Vérifier les tests échoués",
+    "Corriger les problèmes identifiés",
+    "Tester sur appareil réel",
+    "Publier sur Google Play Store"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "timestamp": "2025-10-06T15:07:00.120Z",
+  "webBuild": {
+    "status": "success",
+    "path": "dist/"
+  },
+  "capacitorSync": {
+    "status": "success"
+  },
+  "androidBuild": {
+    "status": "success",
+    "apkPath": "android/app/build/outputs/apk/release/app-release.apk",
+    "bundlePath": "android/app/build/outputs/bundle/release/app-release.aab"
+  },
+  "iosBuild": {
+    "status": "pending",
+    "ipaPath": "ios/App/build/App.ipa",
+    "note": "Requiert Xcode sur macOS"
+  },
+  "status": "success",
+  "message": "Builds de production générés avec succès !",
+  "nextSteps": [
+    "Installer Android Studio si nécessaire",
+    "Télécharger les builds vers les stores",
+    "Configurer les comptes développeurs",
+    "Soumettre pour review",
+    "Publier sur les stores"
+  ]
+}

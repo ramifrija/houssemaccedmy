@@ -1,0 +1,107 @@
+{
+  "project": "Houssem Academy",
+  "version": "1.0.0",
+  "generated": "2025-10-06T11:25:05.330Z",
+  "assets": {
+    "icons": {
+      "ios": [
+        {
+          "size": 1024,
+          "name": "AppStore"
+        },
+        {
+          "size": 180,
+          "name": "iPhone-3x"
+        },
+        {
+          "size": 120,
+          "name": "iPhone-2x"
+        },
+        {
+          "size": 167,
+          "name": "iPad-Pro"
+        },
+        {
+          "size": 152,
+          "name": "iPad-2x"
+        },
+        {
+          "size": 76,
+          "name": "iPad-1x"
+        }
+      ],
+      "android": [
+        {
+          "size": 512,
+          "name": "GooglePlay"
+        },
+        {
+          "size": 192,
+          "name": "mdpi"
+        },
+        {
+          "size": 144,
+          "name": "hdpi"
+        },
+        {
+          "size": 96,
+          "name": "xhdpi"
+        },
+        {
+          "size": 72,
+          "name": "xxhdpi"
+        },
+        {
+          "size": 48,
+          "name": "xxxhdpi"
+        },
+        {
+          "size": 36,
+          "name": "ldpi"
+        }
+      ]
+    },
+    "splash": {
+      "ios": [
+        {
+          "size": "1242x2688",
+          "name": "iPhone-X"
+        },
+        {
+          "size": "1125x2436",
+          "name": "iPhone-XS"
+        },
+        {
+          "size": "828x1792",
+          "name": "iPhone-XR"
+        },
+        {
+          "size": "750x1334",
+          "name": "iPhone-6"
+        },
+        {
+          "size": "2048x2732",
+          "name": "iPad-Pro-12.9"
+        },
+        {
+          "size": "1668x2388",
+          "name": "iPad-Pro-11"
+        }
+      ],
+      "android": [
+        {
+          "size": "1080x1920",
+          "name": "Full-HD"
+        },
+        {
+          "size": "720x1280",
+          "name": "HD"
+        },
+        {
+          "size": "480x800",
+          "name": "WVGA"
+        }
+      ]
+    }
+  }
+}

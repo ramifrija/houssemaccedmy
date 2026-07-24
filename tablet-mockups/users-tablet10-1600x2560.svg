@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1600" height="2560" viewBox="0 0 1600 2560" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond blanc -->
+  <rect width="1600" height="2560" fill="#FFFFFF"/>
+  
+  <!-- Header avec logo -->
+  <rect x="0" y="0" width="1600" height="180" fill="#1A1A1A"/>
+  <circle cx="100" cy="90" r="35" fill="#FFD700"/>
+  <path d="M75,75 L125,75 M75,85 L125,85 M75,95 L125,95 M75,105 L125,105" stroke="#1A1A1A" stroke-width="4"/>
+  <text x="150" y="70" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#FFD700">Houssem Academy</text>
+  <text x="150" y="105" font-family="Arial, sans-serif" font-size="20" fill="#FFFFFF">Administration</text>
+  
+  <!-- Titre de la page -->
+  <text x="800" y="270" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Gestion des Utilisateurs</text>
+  <text x="800" y="310" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#666666">Liste des Élèves</text>
+  
+  <!-- Onglets -->
+  <rect x="100" y="340" width="250" height="70" fill="#FFD700" rx="35"/>
+  <text x="225" y="385" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Élèves (4)</text>
+  
+  <rect x="370" y="340" width="250" height="70" fill="#E0E0E0" rx="35"/>
+  <text x="495" y="385" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#666666">Professeurs (3)</text>
+  
+  <!-- Bouton ajouter -->
+  <rect x="1200" y="340" width="280" height="70" fill="#FFD700" rx="35"/>
+  <text x="1340" y="385" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#1A1A1A">+ Ajouter un élève</text>
+  
+  <!-- Liste des élèves (2 colonnes) -->
+  <!-- Élève 1 -->
+  <rect x="100" y="440" width="680" height="150" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="20"/>
+  <circle cx="170" cy="500" r="30" fill="#3B82F6"/>
+  <text x="170" y="508" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">AB</text>
+  <text x="230" y="485" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1A1A1A">Ahmed Ben Ali</text>
+  <text x="230" y="515" font-family="Arial, sans-serif" font-size="18" fill="#666666">Parent: Mohamed Ben Ali</text>
+  <rect x="230" y="535" width="90" height="30" fill="#3B82F6" rx="15"/>
+  <text x="275" y="552" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">7ème A</text>
+  <rect x="340" y="535" width="80" height="30" fill="#10B981" rx="15"/>
+  <text x="380" y="552" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">Actif</text>
+  <text x="450" y="552" font-family="Arial, sans-serif" font-size="16" fill="#666666">Aujourd'hui</text>
+  
+  <!-- Élève 2 -->
+  <rect x="820" y="440" width="680" height="150" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="20"/>
+  <circle cx="890" cy="500" r="30" fill="#10B981"/>
+  <text x="890" y="508" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">FZ</text>
+  <text x="950" y="485" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1A1A1A">Fatima Zohra</text>
+  <text x="950" y="515" font-family="Arial, sans-serif" font-size="18" fill="#666666">Parent: Aicha Zohra</text>
+  <rect x="950" y="535" width="90" height="30" fill="#3B82F6" rx="15"/>
+  <text x="995" y="552" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">7ème B</text>
+  <rect x="1060" y="535" width="80" height="30" fill="#10B981" rx="15"/>
+  <text x="1100" y="552" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">Actif</text>
+  <text x="1170" y="552" font-family="Arial, sans-serif" font-size="16" fill="#666666">Hier</text>
+  
+  <!-- Élève 3 -->
+  <rect x="100" y="610" width="680" height="150" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="20"/>
+  <circle cx="170" cy="670" r="30" fill="#F59E0B"/>
+  <text x="170" y="678" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">YG</text>
+  <text x="230" y="655" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1A1A1A">Youssef Gharbi</text>
+  <text x="230" y="685" font-family="Arial, sans-serif" font-size="18" fill="#666666">Parent: Omar Gharbi</text>
+  <rect x="230" y="705" width="90" height="30" fill="#3B82F6" rx="15"/>
+  <text x="275" y="722" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">8ème A</text>
+  <rect x="340" y="705" width="100" height="30" fill="#F59E0B" rx="15"/>
+  <text x="390" y="722" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">En attente</text>
+  <text x="460" y="722" font-family="Arial, sans-serif" font-size="16" fill="#666666">Jamais</text>
+  
+  <!-- Élève 4 -->
+  <rect x="820" y="610" width="680" height="150" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="20"/>
+  <circle cx="890" cy="670" r="30" fill="#8B5CF6"/>
+  <text x="890" y="678" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">ST</text>
+  <text x="950" y="655" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1A1A1A">Salma Triki</text>
+  <text x="950" y="685" font-family="Arial, sans-serif" font-size="18" fill="#666666">Parent: Leila Triki</text>
+  <rect x="950" y="705" width="90" height="30" fill="#3B82F6" rx="15"/>
+  <text x="995" y="722" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">7ème A</text>
+  <rect x="1060" y="705" width="80" height="30" fill="#10B981" rx="15"/>
+  <text x="1100" y="722" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">Actif</text>
+  <text x="1170" y="722" font-family="Arial, sans-serif" font-size="16" fill="#666666">Il y a 2 jours</text>
+  
+  <!-- Navigation tablette en bas -->
+  <rect x="0" y="2300" width="1600" height="260" fill="#1A1A1A"/>
+  <circle cx="320" cy="2430" r="40" fill="#666666"/>
+  <circle cx="640" cy="2430" r="40" fill="#FFD700"/>
+  <circle cx="960" cy="2430" r="40" fill="#666666"/>
+  <circle cx="1280" cy="2430" r="40" fill="#666666"/>
+</svg>

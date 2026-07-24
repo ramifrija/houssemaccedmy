@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond blanc -->
+  <rect width="1080" height="1920" fill="#FFFFFF"/>
+  
+  <!-- Header avec logo -->
+  <rect x="0" y="0" width="1080" height="120" fill="#1A1A1A"/>
+  <circle cx="60" cy="60" r="25" fill="#FFD700"/>
+  <path d="M45,50 L75,50 M45,55 L75,55 M45,60 L75,60 M45,65 L75,65 M45,70 L75,70" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="100" y="45" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFD700">Houssem Academy</text>
+  <text x="100" y="70" font-family="Arial, sans-serif" font-size="16" fill="#FFFFFF">Administration</text>
+  
+  <!-- Bouton retour -->
+  <rect x="20" y="35" width="40" height="50" fill="none" stroke="#FFD700" stroke-width="2" rx="8"/>
+  <path d="M30,50 L50,50 M30,60 L50,60" stroke="#FFD700" stroke-width="2"/>
+  
+  <!-- Titre de la page -->
+  <text x="540" y="180" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Gestion des Utilisateurs</text>
+  <text x="540" y="210" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666666">Liste des Élèves</text>
+  
+  <!-- Onglets -->
+  <rect x="60" y="230" width="180" height="50" fill="#FFD700" rx="25"/>
+  <text x="150" y="260" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Élèves (4)</text>
+  
+  <rect x="260" y="230" width="180" height="50" fill="#E0E0E0" rx="25"/>
+  <text x="350" y="260" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#666666">Professeurs (3)</text>
+  
+  <!-- Bouton ajouter -->
+  <rect x="780" y="230" width="220" height="50" fill="#FFD700" rx="25"/>
+  <text x="890" y="260" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#1A1A1A">+ Ajouter un élève</text>
+  
+  <!-- Liste des élèves -->
+  <!-- Élève 1 -->
+  <rect x="60" y="310" width="940" height="100" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="12"/>
+  <circle cx="100" cy="350" r="20" fill="#3B82F6"/>
+  <text x="140" y="340" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A1A1A">Ahmed Ben Ali</text>
+  <text x="140" y="360" font-family="Arial, sans-serif" font-size="14" fill="#666666">Parent: Mohamed Ben Ali</text>
+  <rect x="140" y="375" width="80" height="20" fill="#3B82F6" rx="10"/>
+  <text x="180" y="388" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FFFFFF">7ème A</text>
+  <rect x="240" y="375" width="60" height="20" fill="#10B981" rx="10"/>
+  <text x="270" y="388" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FFFFFF">Actif</text>
+  <text x="320" y="388" font-family="Arial, sans-serif" font-size="12" fill="#666666">Aujourd'hui</text>
+  
+  <!-- Élève 2 -->
+  <rect x="60" y="430" width="940" height="100" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="12"/>
+  <circle cx="100" cy="470" r="20" fill="#10B981"/>
+  <text x="140" y="460" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A1A1A">Fatima Zohra</text>
+  <text x="140" y="480" font-family="Arial, sans-serif" font-size="14" fill="#666666">Parent: Aicha Zohra</text>
+  <rect x="140" y="495" width="80" height="20" fill="#3B82F6" rx="10"/>
+  <text x="180" y="508" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FFFFFF">7ème B</text>
+  <rect x="240" y="495" width="60" height="20" fill="#10B981" rx="10"/>
+  <text x="270" y="508" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FFFFFF">Actif</text>
+  <text x="320" y="508" font-family="Arial, sans-serif" font-size="12" fill="#666666">Hier</text>
+  
+  <!-- Élève 3 -->
+  <rect x="60" y="550" width="940" height="100" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="12"/>
+  <circle cx="100" cy="590" r="20" fill="#F59E0B"/>
+  <text x="140" y="580" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A1A1A">Youssef Gharbi</text>
+  <text x="140" y="600" font-family="Arial, sans-serif" font-size="14" fill="#666666">Parent: Omar Gharbi</text>
+  <rect x="140" y="615" width="80" height="20" fill="#3B82F6" rx="10"/>
+  <text x="180" y="628" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FFFFFF">8ème A</text>
+  <rect x="240" y="615" width="80" height="20" fill="#F59E0B" rx="10"/>
+  <text x="280" y="628" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FFFFFF">En attente</text>
+  <text x="340" y="628" font-family="Arial, sans-serif" font-size="12" fill="#666666">Jamais</text>
+  
+  <!-- Élève 4 -->
+  <rect x="60" y="670" width="940" height="100" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="12"/>
+  <circle cx="100" cy="710" r="20" fill="#8B5CF6"/>
+  <text x="140" y="700" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A1A1A">Salma Triki</text>
+  <text x="140" y="720" font-family="Arial, sans-serif" font-size="14" fill="#666666">Parent: Leila Triki</text>
+  <rect x="140" y="735" width="80" height="20" fill="#3B82F6" rx="10"/>
+  <text x="180" y="748" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FFFFFF">7ème A</text>
+  <rect x="240" y="735" width="60" height="20" fill="#10B981" rx="10"/>
+  <text x="270" y="748" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FFFFFF">Actif</text>
+  <text x="320" y="748" font-family="Arial, sans-serif" font-size="12" fill="#666666">Il y a 2 jours</text>
+  
+  <!-- Navigation mobile en bas -->
+  <rect x="0" y="1800" width="1080" height="120" fill="#1A1A1A"/>
+  <circle cx="216" cy="1860" r="25" fill="#666666"/>
+  <circle cx="432" cy="1860" r="25" fill="#FFD700"/>
+  <circle cx="648" cy="1860" r="25" fill="#666666"/>
+  <circle cx="864" cy="1860" r="25" fill="#666666"/>
+</svg>

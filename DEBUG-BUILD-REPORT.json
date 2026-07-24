@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-10-06T15:02:45.068Z",
+  "webBuild": {
+    "status": "success",
+    "path": "dist/"
+  },
+  "capacitorSync": {
+    "status": "success"
+  },
+  "androidBuild": {
+    "status": "success",
+    "apkPath": "android/app/build/outputs/apk/debug/app-debug.apk",
+    "buildType": "debug"
+  },
+  "iosBuild": {
+    "status": "pending",
+    "ipaPath": "ios/App/build/App.ipa",
+    "note": "Requiert Xcode sur macOS"
+  },
+  "status": "success",
+  "message": "Build DEBUG généré avec succès !",
+  "nextSteps": [
+    "Tester l'APK sur un appareil Android",
+    "Configurer la signature pour les builds de release",
+    "Générer les builds de production",
+    "Publier sur Google Play Store"
+  ]
+}

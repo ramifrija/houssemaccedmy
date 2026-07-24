@@ -1,0 +1,23 @@
+{
+  "ios": {
+    "icon": {
+      "AppStore": "assets/store-assets/icons/ios/icon-1024.png",
+      "iPhone-3x": "assets/store-assets/icons/ios/icon-180.png",
+      "iPhone-2x": "assets/store-assets/icons/ios/icon-120.png",
+      "iPad-Pro": "assets/store-assets/icons/ios/icon-167.png",
+      "iPad-2x": "assets/store-assets/icons/ios/icon-152.png",
+      "iPad-1x": "assets/store-assets/icons/ios/icon-76.png"
+    }
+  },
+  "android": {
+    "icon": {
+      "GooglePlay": "assets/store-assets/icons/android/icon-512.png",
+      "mdpi": "assets/store-assets/icons/android/icon-192.png",
+      "hdpi": "assets/store-assets/icons/android/icon-144.png",
+      "xhdpi": "assets/store-assets/icons/android/icon-96.png",
+      "xxhdpi": "assets/store-assets/icons/android/icon-72.png",
+      "xxxhdpi": "assets/store-assets/icons/android/icon-48.png",
+      "ldpi": "assets/store-assets/icons/android/icon-36.png"
+    }
+  }
+}

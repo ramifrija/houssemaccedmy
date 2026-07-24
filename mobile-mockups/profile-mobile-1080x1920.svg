@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond blanc -->
+  <rect width="1080" height="1920" fill="#FFFFFF"/>
+  
+  <!-- Header avec logo -->
+  <rect x="0" y="0" width="1080" height="120" fill="#1A1A1A"/>
+  <circle cx="60" cy="60" r="25" fill="#FFD700"/>
+  <path d="M45,50 L75,50 M45,55 L75,55 M45,60 L75,60 M45,65 L75,65 M45,70 L75,70" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="100" y="45" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFD700">Houssem Academy</text>
+  <text x="100" y="70" font-family="Arial, sans-serif" font-size="16" fill="#FFFFFF">Profil</text>
+  
+  <!-- Bouton modifier -->
+  <rect x="780" y="35" width="220" height="50" fill="#FFD700" rx="25"/>
+  <text x="890" y="65" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Modifier Profil</text>
+  
+  <!-- Section profil -->
+  <rect x="60" y="150" width="940" height="200" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="12"/>
+  <circle cx="540" cy="220" r="50" fill="#3B82F6"/>
+  <text x="540" y="230" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#FFFFFF">AB</text>
+  <text x="540" y="280" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Ahmed Ben Ali</text>
+  <text x="540" y="305" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#666666">Élève - 7ème A</text>
+  <rect x="460" y="315" width="160" height="25" fill="#10B981" rx="12"/>
+  <text x="540" y="330" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#FFFFFF">Compte Actif</text>
+  
+  <!-- Informations personnelles -->
+  <rect x="60" y="370" width="940" height="300" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="12"/>
+  <text x="80" y="400" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1A1A1A">Informations Personnelles</text>
+  
+  <!-- Email -->
+  <text x="80" y="430" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#666666">Email</text>
+  <text x="80" y="450" font-family="Arial, sans-serif" font-size="16" fill="#1A1A1A">ahmed.benali@houssemacademy.com</text>
+  
+  <!-- Téléphone -->
+  <text x="80" y="480" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#666666">Téléphone</text>
+  <text x="80" y="500" font-family="Arial, sans-serif" font-size="16" fill="#1A1A1A">+216 25 123 456</text>
+  
+  <!-- Date de naissance -->
+  <text x="80" y="530" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#666666">Date de naissance</text>
+  <text x="80" y="550" font-family="Arial, sans-serif" font-size="16" fill="#1A1A1A">15 Mars 2010</text>
+  
+  <!-- Adresse -->
+  <text x="80" y="580" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#666666">Adresse</text>
+  <text x="80" y="600" font-family="Arial, sans-serif" font-size="16" fill="#1A1A1A">123 Rue de l'Éducation, Tunis</text>
+  
+  <!-- Informations académiques -->
+  <rect x="60" y="690" width="940" height="250" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="12"/>
+  <text x="80" y="720" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1A1A1A">Informations Académiques</text>
+  
+  <!-- Classe -->
+  <text x="80" y="750" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#666666">Classe</text>
+  <rect x="80" y="760" width="100" height="25" fill="#3B82F6" rx="12"/>
+  <text x="130" y="775" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#FFFFFF">7ème A</text>
+  
+  <!-- Moyenne -->
+  <text x="220" y="750" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#666666">Moyenne Générale</text>
+  <text x="220" y="775" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#10B981">15.8/20</text>
+  
+  <!-- Présence -->
+  <text x="400" y="750" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#666666">Taux de Présence</text>
+  <text x="400" y="775" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#F59E0B">92%</text>
+  
+  <!-- Statistiques -->
+  <rect x="80" y="800" width="800" height="120" fill="#F8F9FA" rx="8"/>
+  <text x="100" y="825" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Statistiques du Trimestre</text>
+  
+  <!-- Matières -->
+  <text x="100" y="850" font-family="Arial, sans-serif" font-size="14" fill="#666666">Mathématiques: 16/20</text>
+  <text x="300" y="850" font-family="Arial, sans-serif" font-size="14" fill="#666666">Français: 15/20</text>
+  <text x="500" y="850" font-family="Arial, sans-serif" font-size="14" fill="#666666">Sciences: 17/20</text>
+  <text x="700" y="850" font-family="Arial, sans-serif" font-size="14" fill="#666666">Histoire: 14/20</text>
+  
+  <!-- Actions rapides -->
+  <rect x="60" y="960" width="940" height="150" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="12"/>
+  <text x="80" y="990" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1A1A1A">Actions Rapides</text>
+  
+  <!-- Boutons d'action -->
+  <rect x="80" y="1010" width="200" height="60" fill="#FFD700" rx="8"/>
+  <text x="180" y="1050" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Voir les Notes</text>
+  
+  <rect x="300" y="1010" width="200" height="60" fill="#FFD700" rx="8"/>
+  <text x="400" y="1050" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Absences</text>
+  
+  <rect x="520" y="1010" width="200" height="60" fill="#FFD700" rx="8"/>
+  <text x="620" y="1050" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Devoirs</text>
+  
+  <rect x="740" y="1010" width="200" height="60" fill="#FFD700" rx="8"/>
+  <text x="840" y="1050" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Messages</text>
+  
+  <!-- Navigation mobile en bas -->
+  <rect x="0" y="1800" width="1080" height="120" fill="#1A1A1A"/>
+  <circle cx="216" cy="1860" r="25" fill="#666666"/>
+  <circle cx="432" cy="1860" r="25" fill="#666666"/>
+  <circle cx="648" cy="1860" r="25" fill="#666666"/>
+  <circle cx="864" cy="1860" r="25" fill="#666666"/>
+</svg>

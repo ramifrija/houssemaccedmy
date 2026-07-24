@@ -1,0 +1,21 @@
+{
+  "project": "Houssem Academy",
+  "version": "1.0.0",
+  "status": "En cours de préparation",
+  "progress": {
+    "code": "100%",
+    "build": "100%",
+    "mobile": "100%",
+    "assets": "0%",
+    "stores": "0%"
+  },
+  "nextSteps": [
+    "Créer les icônes (1024x1024px)",
+    "Générer les splash screens",
+    "Capturer les écrans de démonstration",
+    "Configurer les comptes développeurs",
+    "Soumettre aux stores"
+  ],
+  "estimatedTime": "2-3 semaines",
+  "lastUpdated": "2025-10-06T11:25:05.335Z"
+}

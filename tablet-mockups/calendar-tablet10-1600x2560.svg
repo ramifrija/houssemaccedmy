@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1600" height="2560" viewBox="0 0 1600 2560" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond blanc -->
+  <rect width="1600" height="2560" fill="#FFFFFF"/>
+  
+  <!-- Header avec logo -->
+  <rect x="0" y="0" width="1600" height="180" fill="#1A1A1A"/>
+  <circle cx="100" cy="90" r="35" fill="#FFD700"/>
+  <path d="M75,75 L125,75 M75,85 L125,85 M75,95 L125,95 M75,105 L125,105" stroke="#1A1A1A" stroke-width="4"/>
+  <text x="150" y="70" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#FFD700">Houssem Academy</text>
+  <text x="150" y="105" font-family="Arial, sans-serif" font-size="20" fill="#FFFFFF">Administration</text>
+  
+  <!-- Bouton nouveau cours -->
+  <rect x="1200" y="60" width="280" height="60" fill="#FFD700" rx="30"/>
+  <text x="1340" y="100" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#1A1A1A">+ Nouveau Cours</text>
+  
+  <!-- Titre de la page -->
+  <text x="800" y="270" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Calendrier des Cours</text>
+  <text x="800" y="310" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#666666">Planning et organisation</text>
+  
+  <!-- Onglets de vue -->
+  <rect x="100" y="340" width="250" height="70" fill="#FFD700" rx="35"/>
+  <text x="225" y="385" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Vue Journalière</text>
+  
+  <rect x="370" y="340" width="250" height="70" fill="#E0E0E0" rx="35"/>
+  <text x="495" y="385" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#666666">Planning Mensuel</text>
+  
+  <!-- Section calendrier et cours côte à côte -->
+  <!-- Calendrier (gauche) -->
+  <rect x="100" y="440" width="700" height="500" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="20"/>
+  <text x="150" y="485" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1A1A1A">Calendrier</text>
+  <text x="150" y="520" font-family="Arial, sans-serif" font-size="18" fill="#666666">Sélectionner une date</text>
+  
+  <!-- Mini calendrier -->
+  <rect x="150" y="545" width="600" height="360" fill="#F8F9FA" rx="15"/>
+  <text x="450" y="585" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#1A1A1A">Octobre 2025</text>
+  
+  <!-- Jours de la semaine -->
+  <text x="180" y="625" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666666">Di</text>
+  <text x="240" y="625" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666666">Lu</text>
+  <text x="300" y="625" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666666">Ma</text>
+  <text x="360" y="625" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666666">Me</text>
+  <text x="420" y="625" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666666">Je</text>
+  <text x="480" y="625" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666666">Ve</text>
+  <text x="540" y="625" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#666666">Sa</text>
+  
+  <!-- Date sélectionnée -->
+  <circle cx="420" cy="700" r="30" fill="#1A1A1A"/>
+  <text x="420" y="710" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#FFFFFF">12</text>
+  
+  <!-- Cours du jour (droite) -->
+  <rect x="820" y="440" width="680" height="500" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="20"/>
+  <text x="870" y="485" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1A1A1A">Cours d'Aujourd'hui</text>
+  <text x="870" y="520" font-family="Arial, sans-serif" font-size="18" fill="#666666">dimanche 12 octobre 2025</text>
+  
+  <!-- Cours 1 -->
+  <rect x="870" y="550" width="600" height="120" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="15"/>
+  <rect x="870" y="550" width="10" height="120" fill="#3B82F6"/>
+  <text x="910" y="580" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1A1A1A">Mathématiques</text>
+  <rect x="910" y="590" width="90" height="30" fill="#3B82F6" rx="15"/>
+  <text x="955" y="607" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">7ème A</text>
+  <text x="910" y="640" font-family="Arial, sans-serif" font-size="18" fill="#666666">08:00 - 09:00 • Salle 101</text>
+  <text x="910" y="665" font-family="Arial, sans-serif" font-size="18" fill="#666666">25 élèves • Prof. Hassan Amri</text>
+  
+  <!-- Cours 2 -->
+  <rect x="870" y="690" width="600" height="120" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" rx="15"/>
+  <rect x="870" y="690" width="10" height="120" fill="#10B981"/>
+  <text x="910" y="720" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1A1A1A">Français</text>
+  <rect x="910" y="730" width="90" height="30" fill="#3B82F6" rx="15"/>
+  <text x="955" y="747" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF">7ème B</text>
+  <text x="910" y="780" font-family="Arial, sans-serif" font-size="18" fill="#666666">09:15 - 10:15 • Salle 203</text>
+  <text x="910" y="805" font-family="Arial, sans-serif" font-size="18" fill="#666666">23 élèves • Prof. Nadia Slim</text>
+  
+  <!-- Navigation tablette en bas -->
+  <rect x="0" y="2300" width="1600" height="260" fill="#1A1A1A"/>
+  <circle cx="320" cy="2430" r="40" fill="#666666"/>
+  <circle cx="640" cy="2430" r="40" fill="#666666"/>
+  <circle cx="960" cy="2430" r="40" fill="#FFD700"/>
+  <circle cx="1280" cy="2430" r="40" fill="#666666"/>
+</svg>

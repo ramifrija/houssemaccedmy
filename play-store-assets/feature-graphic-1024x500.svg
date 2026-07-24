@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="500" viewBox="0 0 1024 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond jaune -->
+  <rect width="1024" height="500" fill="#FFD700"/>
+  
+  <!-- Chapeau de diplômé (plus grand) -->
+  <g transform="translate(512, 120)">
+    <!-- Base du chapeau -->
+    <path d="M-120,0 Q0,-30 120,0 L120,20 Q0,10 -120,20 Z" fill="#000000"/>
+    
+    <!-- Dessus du chapeau -->
+    <path d="M-110,-25 L110,-25 L125,-10 L-125,-10 Z" fill="#000000"/>
+    
+    <!-- Tige du gland -->
+    <rect x="-3" y="-10" width="6" height="35" fill="#000000"/>
+    
+    <!-- Gland -->
+    <circle cx="0" cy="30" r="12" fill="#000000"/>
+  </g>
+  
+  <!-- Texte "Houssem" -->
+  <text x="512" y="280" font-family="Georgia, serif" font-size="72" font-weight="bold" text-anchor="middle" fill="#000000">Houssem</text>
+  
+  <!-- Lignes décoratives -->
+  <line x1="300" y1="320" x2="724" y2="320" stroke="#000000" stroke-width="4"/>
+  <line x1="300" y1="380" x2="724" y2="380" stroke="#000000" stroke-width="4"/>
+  
+  <!-- Texte "ACADEMY" -->
+  <text x="512" y="355" font-family="Arial, sans-serif" font-size="42" font-weight="bold" text-anchor="middle" fill="#000000">ACADEMY</text>
+  
+  <!-- Texte descriptif -->
+  <text x="512" y="420" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#000000">Plateforme éducative complète</text>
+  <text x="512" y="450" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#333333">Pour élèves, professeurs et parents</text>
+</svg>
