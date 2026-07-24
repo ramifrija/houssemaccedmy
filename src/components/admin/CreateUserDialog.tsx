@@ -173,20 +173,7 @@ export function CreateUserDialog({
             />
           </div>
 
-          <div>
-            <Label>Rôle</Label>
-            <Select value={role} onValueChange={(v) => setRole(v as CreatableRole)}>
-              <SelectTrigger className="mt-1 border-school-yellow/30">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="student">Élève</SelectItem>
-                <SelectItem value="teacher">Professeur</SelectItem>
-                <SelectItem value="parent">Parent</SelectItem>
-                <SelectItem value="admin">Administrateur</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Rôle dropdown removed as per request, using defaultRole */}
 
           {role === 'student' && (
             <div>

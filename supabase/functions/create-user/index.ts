@@ -118,6 +118,7 @@ serve(async (req) => {
         last_name,
         email,
         requested_role: role,
+        status: 'approved',
       })
       .eq('user_id', userId)
 

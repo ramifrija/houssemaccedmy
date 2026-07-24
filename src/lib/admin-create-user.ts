@@ -82,8 +82,10 @@ async function createViaEphemeralSignup(input: AdminCreateUserInput) {
     return { userId: null, error: new Error('Compte créé mais identifiant introuvable.') }
   }
 
-  const userId = signUpData.user.id
-  await waitForProfile(userId)
+  const profileCreated = await waitForProfile(userId)
+  if (!profileCreated) {
+    return { userId: null, error: new Error("L'email est probablement déjà utilisé ou la création a échoué silencieusement.") }
+  }
 
   const roleId = await resolveRoleId(supabase, input.role)
 
@@ -93,6 +95,7 @@ async function createViaEphemeralSignup(input: AdminCreateUserInput) {
       role_id: roleId,
       first_name: input.first_name.trim(),
       last_name: input.last_name.trim(),
+      status: 'approved',
     })
     .eq('user_id', userId)
 
@@ -116,25 +119,40 @@ async function createViaEphemeralSignup(input: AdminCreateUserInput) {
 }
 
 export async function adminCreateUser(input: AdminCreateUserInput) {
+  let userId: string | null = null;
+  let error: Error | null = null;
+
   const vercelResult = await createViaVercelApi(input)
-  if (vercelResult.userId) return vercelResult
-
-  const edgeResult = await createViaEdgeFunction(input)
-  if (edgeResult.userId) return edgeResult
-
-  const fallback = await createViaEphemeralSignup(input)
-  if (fallback.userId) return fallback
-
-  return {
-    userId: null,
-    error: fallback.error ?? edgeResult.error ?? vercelResult.error,
+  if (vercelResult.userId) {
+    userId = vercelResult.userId
+  } else {
+    const edgeResult = await createViaEdgeFunction(input)
+    if (edgeResult.userId) {
+      userId = edgeResult.userId
+    } else {
+      const fallback = await createViaEphemeralSignup(input)
+      if (fallback.userId) {
+        userId = fallback.userId
+      } else {
+        error = fallback.error ?? edgeResult.error ?? vercelResult.error ?? new Error('Unknown error')
+      }
+    }
   }
+
+  if (userId) {
+    // Force status to approved directly from client to avoid waiting for server redeployments
+    await supabase.from('profiles').update({ status: 'approved' }).eq('user_id', userId)
+    return { userId, error: null }
+  }
+
+  return { userId: null, error }
 }
 
 async function waitForProfile(userId: string, attempts = 5) {
   for (let i = 0; i < attempts; i++) {
     const { data } = await supabase.from('profiles').select('id').eq('user_id', userId).maybeSingle()
-    if (data) return
+    if (data) return true
     await new Promise((r) => setTimeout(r, 400))
   }
+  return false
 }
