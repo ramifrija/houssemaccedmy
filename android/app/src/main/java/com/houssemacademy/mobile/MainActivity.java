@@ -1,4 +1,4 @@
-package com.houssemacademy.app;
+package com.houssemacademy.mobile;
 
 import com.getcapacitor.BridgeActivity;
 
