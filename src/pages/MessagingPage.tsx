@@ -278,7 +278,8 @@ const MessagingPage = () => {
 
         const creatorName = userProfile ? formatUserDisplayName(userProfile as any) : 'Professeur'
         const roleLabel = userProfile?.role === 'admin' ? 'Admin' : 'Prof'
-        const customTitle = `${courseName}Classe ${className} - ${creatorName} (${roleLabel})`
+        const autoTitle = `${courseName}Classe ${className} - ${creatorName} (${roleLabel})`
+        const customTitle = groupTitle.trim() || autoTitle
 
         return sendMessageToClass(Number(selectedClass), firstMessage.trim(), customTitle)
       }
@@ -625,6 +626,15 @@ const MessagingPage = () => {
                         ))}
                       </SelectContent>
                     </Select>
+
+                    {selectedClass && (
+                      <Input
+                        placeholder="Nom de la conversation (optionnel)"
+                        value={groupTitle}
+                        onChange={(e) => setGroupTitle(e.target.value)}
+                        className="border-school-yellow/30 focus:border-school-yellow"
+                      />
+                    )}
 
                     {userProfile?.role === 'teacher' && teacherCourses.length > 1 && (
                       <div className="space-y-1 mt-3">

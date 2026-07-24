@@ -308,14 +308,27 @@ export async function startGroupConversation(
 }
 
 export async function sendMessageToClass(classId: number, content: string, title?: string): Promise<string> {
+  // Si un titre personnalisé est fourni, on utilise la RPC dédiée (SECURITY DEFINER)
+  // qui crée toujours une NOUVELLE conversation avec tous les participants de la classe.
+  if (title?.trim()) {
+    const { data, error } = await supabase.rpc('create_class_group_conversation', {
+      p_class_id: classId,
+      p_title: title.trim(),
+      p_content: content.trim(),
+    })
+    if (error) throw error
+    return String(data)
+  }
+
+  // Sans titre personnalisé : utiliser la RPC existante (peut recycler une conversation existante)
   const { data, error } = await supabase.rpc('send_message_to_class', {
     p_class_id: classId,
     p_content: content.trim(),
-    p_title: title?.trim() || null,
+    p_title: null,
   })
   if (!error) return String(data)
 
-  // Fallback JS si la RPC échoue (ex: mauvaise vérification du rôle)
+  // Fallback JS si la RPC échoue
   const { data: userResponse } = await supabase.auth.getUser()
   const userId = userResponse.user?.id
   if (!userId) throw new Error('Non authentifié')
@@ -329,7 +342,7 @@ export async function sendMessageToClass(classId: number, content: string, title
 
   const { data: convData, error: convError } = await supabase
     .from('conversations')
-    .insert({ title: title?.trim() || `Classe ${classData.name}`, is_group: true, created_by: userId })
+    .insert({ title: `Classe ${classData.name}`, is_group: true, created_by: userId })
     .select('id')
     .single()
   if (convError) throw convError
@@ -353,11 +366,7 @@ export async function sendMessageToClass(classId: number, content: string, title
 
   const { error: msgError } = await supabase
     .from('messages')
-    .insert({
-      conversation_id: convData.id,
-      sender_id: userId,
-      content: content.trim(),
-    })
+    .insert({ conversation_id: convData.id, sender_id: userId, content: content.trim() })
   if (msgError) throw msgError
 
   return String(convData.id)
