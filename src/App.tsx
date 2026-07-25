@@ -13,6 +13,7 @@ import MobileNavigation from '@/components/MobileNavigation'
 import { AppLoading } from '@/components/layout/AppLoading'
 import { getDefaultRouteForRole } from '@/lib/role-navigation'
 import { CourseReminderHost } from '@/components/CourseReminderHost'
+import { GlobalMessageNotification } from '@/components/messaging/GlobalMessageNotification'
 
 const Index = lazy(() => import('./pages/Index'))
 const Users = lazy(() => import('./pages/Users'))
@@ -193,6 +194,7 @@ const App = () => (
           <AppContent />
           <Toaster />
           <Sonner />
+          <GlobalMessageNotification />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

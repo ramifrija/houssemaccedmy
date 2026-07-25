@@ -226,6 +226,7 @@ const CalendarPage = () => {
                     courses={todaysCourses}
                     selectedDate={selectedDate}
                     canManage={canManage}
+                    hideFilters={userProfile?.role === 'student' || userProfile?.role === 'teacher'}
                     onDelete={async (id) => {
                       await deleteCourse.mutateAsync(id)
                     }}

@@ -15,11 +15,12 @@ interface TodaysCoursesProps {
 	canManage?: boolean
 	onEdit?: (course: CalendarSession) => void
 	onDelete?: (courseId: string) => void
+	hideFilters?: boolean
 }
 
 const ITEMS_PER_PAGE = 3
 
-const TodaysCourses = ({ courses, selectedDate = new Date(), canManage = false, onEdit, onDelete }: TodaysCoursesProps) => {
+const TodaysCourses = ({ courses, selectedDate = new Date(), canManage = false, onEdit, onDelete, hideFilters = false }: TodaysCoursesProps) => {
 	const [currentPage, setCurrentPage] = useState(1)
 	const [selectedTeacher, setSelectedTeacher] = useState<string>("all")
 	const [selectedClass, setSelectedClass] = useState<string>("all")
@@ -55,7 +56,7 @@ const TodaysCourses = ({ courses, selectedDate = new Date(), canManage = false, 
 					</CardDescription>
 				</div>
 				<div className="flex flex-wrap items-center gap-2">
-					{uniqueTeachers.length > 0 && (
+					{!hideFilters && uniqueTeachers.length > 0 && (
 						<Popover open={openTeacher} onOpenChange={setOpenTeacher}>
 							<PopoverTrigger asChild>
 								<Button
@@ -107,7 +108,7 @@ const TodaysCourses = ({ courses, selectedDate = new Date(), canManage = false, 
 							</PopoverContent>
 						</Popover>
 					)}
-					{uniqueClasses.length > 0 && (
+					{!hideFilters && uniqueClasses.length > 0 && (
 						<Popover open={openClass} onOpenChange={setOpenClass}>
 							<PopoverTrigger asChild>
 								<Button

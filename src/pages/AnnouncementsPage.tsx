@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Bell, Send, AlertTriangle, Info, CheckCircle, Plus, Trash2, DollarSign, MessageSquare } from 'lucide-react'
+import { Bell, Send, AlertTriangle, Info, CheckCircle, Plus, Trash2, DollarSign, MessageSquare, X } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -53,11 +53,34 @@ const AnnouncementsPage = () => {
   const queryClient = useQueryClient()
   const isAdmin = userProfile?.role === 'admin'
 
+  const [dismissedAnnouncements, setDismissedAnnouncements] = useState<string[]>(() => {
+    const saved = localStorage.getItem('dismissed_announcements')
+    return saved ? JSON.parse(saved) : []
+  })
+
+  const [dismissedNotifs, setDismissedNotifs] = useState<string[]>(() => {
+    const saved = localStorage.getItem('dismissed_notifs')
+    return saved ? JSON.parse(saved) : []
+  })
+
   const { data: announcements = [], isLoading } = useQuery({
     queryKey: ['announcements'],
     queryFn: () => fetchAnnouncements(),
   })
 
+  const visibleAnnouncements = announcements.filter(a => !dismissedAnnouncements.includes(a.id))
+
+  const handleDismissAnnouncement = (id: string) => {
+    const updated = [...dismissedAnnouncements, id]
+    setDismissedAnnouncements(updated)
+    localStorage.setItem('dismissed_announcements', JSON.stringify(updated))
+  }
+
+  const handleDismissNotif = (id: string) => {
+    const updated = [...dismissedNotifs, id]
+    setDismissedNotifs(updated)
+    localStorage.setItem('dismissed_notifs', JSON.stringify(updated))
+  }
   const { data: userNotifications = [], isLoading: loadingNotifs } = useQuery({
     queryKey: ['user-notifications', user?.id],
     queryFn: async () => {
@@ -73,6 +96,8 @@ const AnnouncementsPage = () => {
     },
     enabled: !!user?.id,
   })
+
+  const visibleNotifs = userNotifications.filter(n => !dismissedNotifs.includes(n.id))
 
   // Temps réel : rafraîchir les notifications dès qu'une nouvelle ligne arrive
   useEffect(() => {
@@ -243,12 +268,12 @@ const AnnouncementsPage = () => {
         <div className="p-4 space-y-4 max-w-5xl mx-auto">
           <Tabs defaultValue="announcements" className="w-full">
             <TabsList className="w-full mb-6 max-w-md mx-auto grid grid-cols-2">
-              <TabsTrigger value="announcements">Annonces ({announcements.length})</TabsTrigger>
+              <TabsTrigger value="announcements">Annonces ({visibleAnnouncements.length})</TabsTrigger>
               <TabsTrigger value="notifications" className="relative">
                 Notifications
-                {userNotifications.length > 0 && (
+                {visibleNotifs.length > 0 && (
                   <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center rounded-full p-0 text-[10px]">
-                    {userNotifications.length}
+                    {visibleNotifs.length}
                   </Badge>
                 )}
               </TabsTrigger>
@@ -257,7 +282,7 @@ const AnnouncementsPage = () => {
             <TabsContent value="announcements" className="space-y-4 mt-0">
               {isLoading ? (
                 <p className="text-sm text-center text-school-black/50 py-8">Chargement...</p>
-              ) : announcements.length === 0 ? (
+              ) : visibleAnnouncements.length === 0 ? (
                 <Card>
                   <CardContent className="py-12 text-center text-school-black/50">
                     <Bell className="w-10 h-10 mx-auto mb-3 opacity-30" />
@@ -265,7 +290,7 @@ const AnnouncementsPage = () => {
                   </CardContent>
                 </Card>
               ) : (
-                announcements.map((announcement) => (
+                visibleAnnouncements.map((announcement) => (
                   <Card key={announcement.id} className={getPriorityColor(announcement.priority)}>
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between gap-2">
@@ -277,11 +302,24 @@ const AnnouncementsPage = () => {
                           <Badge variant="outline" className="text-xs">
                             {audienceLabel(announcement.audience)}
                           </Badge>
+                          {!isAdmin && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-school-black/40 hover:text-school-black"
+                              onClick={() => handleDismissAnnouncement(announcement.id)}
+                              title="Masquer l'annonce"
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          )}
                           {isAdmin && (
                             <Button
                               variant="ghost"
                               size="icon"
+                              className="h-8 w-8"
                               onClick={() => remove.mutate(announcement.id)}
+                              title="Supprimer l'annonce (Global)"
                             >
                               <Trash2 className="w-4 h-4 text-red-500" />
                             </Button>
@@ -311,7 +349,7 @@ const AnnouncementsPage = () => {
             <TabsContent value="notifications" className="space-y-4 mt-0">
               {loadingNotifs ? (
                 <p className="text-sm text-center text-school-black/50 py-8">Chargement...</p>
-              ) : userNotifications.length === 0 ? (
+              ) : visibleNotifs.length === 0 ? (
                 <Card>
                   <CardContent className="py-12 text-center text-school-black/50">
                     <Bell className="w-10 h-10 mx-auto mb-3 opacity-30" />
@@ -320,7 +358,7 @@ const AnnouncementsPage = () => {
                 </Card>
               ) : (
                 <>
-                  {userNotifications.slice((notifPage - 1) * itemsPerPage, notifPage * itemsPerPage).map((notif) => (
+                  {visibleNotifs.slice((notifPage - 1) * itemsPerPage, notifPage * itemsPerPage).map((notif) => (
                     <Card key={notif.id} className={`border-l-4 shadow-sm ${notif.read_at ? 'border-gray-200 bg-gray-50/50' : 'border-school-yellow bg-white'}`}>
                       <CardHeader className="pb-2">
                         <div className="flex items-start justify-between gap-2">
@@ -330,14 +368,25 @@ const AnnouncementsPage = () => {
                               {notif.title}
                             </CardTitle>
                           </div>
-                          <span className="text-[10px] text-school-black/50 shrink-0">
-                            {new Date(notif.created_at).toLocaleString('fr-FR', {
-                              day: 'numeric',
-                              month: 'short',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
-                          </span>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-[10px] text-school-black/50">
+                              {new Date(notif.created_at).toLocaleString('fr-FR', {
+                                day: 'numeric',
+                                month: 'short',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 text-school-black/30 hover:text-red-500"
+                              onClick={() => handleDismissNotif(notif.id)}
+                              title="Effacer la notification"
+                            >
+                              <X className="w-3 h-3" />
+                            </Button>
+                          </div>
                         </div>
                       </CardHeader>
                       <CardContent>
@@ -348,7 +397,7 @@ const AnnouncementsPage = () => {
                     </Card>
                   ))}
                   
-                  {userNotifications.length > itemsPerPage && (
+                  {visibleNotifs.length > itemsPerPage && (
                     <div className="flex items-center justify-between pt-4">
                       <Button
                         variant="outline"
@@ -359,12 +408,12 @@ const AnnouncementsPage = () => {
                         Précédent
                       </Button>
                       <span className="text-sm text-school-black/60 font-medium">
-                        Page {notifPage} sur {Math.ceil(userNotifications.length / itemsPerPage)}
+                        Page {notifPage} sur {Math.ceil(visibleNotifs.length / itemsPerPage)}
                       </span>
                       <Button
                         variant="outline"
                         size="sm"
-                        disabled={notifPage >= Math.ceil(userNotifications.length / itemsPerPage)}
+                        disabled={notifPage >= Math.ceil(visibleNotifs.length / itemsPerPage)}
                         onClick={() => setNotifPage(p => p + 1)}
                       >
                         Suivant

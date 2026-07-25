@@ -51,7 +51,27 @@ export function EditUserDialog({
     setFirstName(user.first_name ?? '')
     setLastName(user.last_name ?? '')
     setEmail(user.email ?? '')
-    setClassId(user.class_id ? String(user.class_id) : '')
+    
+    if (user.class_id) {
+      setClassId(String(user.class_id))
+    } else if (isStudent) {
+      // Fallback: fetch directly if not present in the user object for some reason
+      supabase
+        .from('student_enrollments')
+        .select('class_id')
+        .eq('student_id', user.user_id)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data?.class_id) {
+            setClassId(String(data.class_id))
+          } else {
+            setClassId('')
+          }
+        })
+    } else {
+      setClassId('')
+    }
+    
     setStatus(user.status ?? 'approved')
     setPassword('')
   }, [user, open])
@@ -71,13 +91,16 @@ export function EditUserDialog({
     setSubmitting(true)
 
     try {
+      const currentClassIdStr = user.class_id ? String(user.class_id) : ''
+      const classIdChanged = classId !== currentClassIdStr
+
       await updateUser({
         user_id: user.user_id,
         first_name: firstName,
         last_name: lastName,
         email,
         status,
-        class_id: isStudent ? (classId ? Number(classId) : null) : undefined,
+        class_id: isStudent ? (classIdChanged ? (classId ? Number(classId) : null) : undefined) : undefined,
         password: password.trim() || undefined,
       })
 
@@ -165,10 +188,13 @@ export function EditUserDialog({
             </Select>
           </div>
 
-          {isStudent && (
+          {isStudent && classes.length > 0 && (
             <div>
               <Label>Classe</Label>
-              <Select value={classId} onValueChange={setClassId}>
+              <Select 
+                value={classId ? String(classId) : undefined} 
+                onValueChange={(val) => setClassId(val)}
+              >
                 <SelectTrigger className="mt-1 border-school-yellow/30">
                   <SelectValue placeholder="Sélectionner une classe" />
                 </SelectTrigger>
@@ -180,6 +206,14 @@ export function EditUserDialog({
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+          )}
+          {isStudent && classes.length === 0 && (
+            <div>
+              <Label>Classe</Label>
+              <div className="mt-1 p-2 text-sm text-slate-500 border border-school-yellow/30 rounded-md bg-slate-50">
+                Chargement des classes...
+              </div>
             </div>
           )}
 
