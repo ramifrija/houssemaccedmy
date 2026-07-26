@@ -20,44 +20,77 @@ serve(async (req) => {
       return new Response('No record in payload', { status: 400 })
     }
 
-    // Determine the receiver ID and message content based on the table
-    let receiverId = null
-    let title = 'Nouvelle notification'
-    let body = 'Vous avez une nouvelle notification'
-
-    if (payload.table === 'messages') {
-      receiverId = record.receiver_id
-      body = record.content || 'Vous avez reçu un nouveau message'
-      title = 'Nouveau Message'
-    } else if (payload.table === 'announcements') {
-      // Announcements might not have a specific receiver, maybe broadcast?
-      // For now, let's just handle messages to specific users
-      return new Response('Broadcast not implemented yet', { status: 200 })
-    }
-
-    if (!receiverId) {
-      return new Response('No receiver ID found', { status: 200 })
-    }
-
     // Initialize Supabase Client
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // Fetch the FCM token for the receiver
-    const { data: profile, error } = await supabaseClient
-      .from('profiles')
-      .select('fcm_token')
-      .eq('user_id', receiverId)
-      .single()
+    // Determine the receiver ID and message content based on the table
+    let receiverIds: string[] = []
+    let title = 'Nouvelle notification'
+    let body = 'Vous avez une nouvelle notification'
 
-    if (error || !profile?.fcm_token) {
-      console.log('No FCM token found for user:', receiverId)
-      return new Response('No FCM token for user', { status: 200 })
+    if (payload.table === 'messages') {
+      const conversationId = record.conversation_id
+      const senderId = record.sender_id
+      body = record.content || 'Vous avez reçu un nouveau message'
+      title = 'Nouveau Message'
+      
+      const { data: participants, error: pError } = await supabaseClient
+        .from('conversation_participants')
+        .select('user_id')
+        .eq('conversation_id', conversationId)
+        .neq('user_id', senderId)
+        
+      if (!pError && participants) {
+        receiverIds = participants.map(p => p.user_id)
+      }
+    } else if (payload.table === 'notifications') {
+      receiverIds = [record.user_id]
+      title = record.title || 'Nouvelle notification'
+      body = record.content || ''
+    } else if (payload.table === 'announcements') {
+      title = record.title || 'Nouvelle annonce'
+      body = record.content ? record.content.substring(0, 100) : 'Une nouvelle annonce a été publiée.'
+      
+      let query = supabaseClient.from('profiles').select('user_id').neq('user_id', record.author_id)
+      
+      if (record.audience === 'students') {
+        query = query.eq('role_id', 3)
+      } else if (record.audience === 'teachers') {
+        query = query.eq('role_id', 2)
+      } else if (record.audience === 'parents') {
+        query = query.eq('role_id', 4)
+      }
+      
+      const { data: profilesData, error: pError } = await query
+      if (!pError && profilesData) {
+        receiverIds = profilesData.map(p => p.user_id)
+      }
     }
 
-    const fcmToken = profile.fcm_token
+    if (receiverIds.length === 0) {
+      return new Response('No receiver IDs found', { status: 200 })
+    }
+
+    // Fetch the FCM tokens for the receivers
+    const { data: profiles, error } = await supabaseClient
+      .from('profiles')
+      .select('fcm_token')
+      .in('user_id', receiverIds)
+
+    if (error || !profiles || profiles.length === 0) {
+      console.log('No profiles found for users')
+      return new Response('No profiles found', { status: 200 })
+    }
+
+    const fcmTokens = profiles.map(p => p.fcm_token).filter(t => t && t.length > 0)
+    
+    if (fcmTokens.length === 0) {
+      console.log('No FCM tokens found for users')
+      return new Response('No FCM tokens found', { status: 200 })
+    }
 
     // Initialize Firebase Auth
     const serviceAccountStr = Deno.env.get('FIREBASE_SERVICE_ACCOUNT')
@@ -75,31 +108,38 @@ serve(async (req) => {
     })
 
     const accessToken = await auth.getAccessToken()
-
-    // Send Push Notification via FCM HTTP v1 API
     const fcmUrl = `https://fcm.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/messages:send`
     
-    const fcmResponse = await fetch(fcmUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({
-        message: {
-          token: fcmToken,
-          notification: {
-            title: title,
-            body: body,
-          },
+    // Send Push Notification to all tokens (sequentially or Promise.all)
+    const promises = fcmTokens.map(token => {
+      return fetch(fcmUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
         },
-      }),
+        body: JSON.stringify({
+          message: {
+            token: token,
+            notification: {
+              title: title,
+              body: body,
+            },
+            android: {
+              priority: 'high',
+              notification: {
+                sound: 'default',
+              }
+            }
+          },
+        }),
+      })
     })
 
-    const fcmResult = await fcmResponse.json()
-    console.log('FCM Send Result:', fcmResult)
+    const responses = await Promise.all(promises)
+    console.log(`Sent ${responses.length} notifications.`)
 
-    return new Response(JSON.stringify({ success: true, result: fcmResult }), {
+    return new Response(JSON.stringify({ success: true, sent: responses.length }), {
       headers: { 'Content-Type': 'application/json' },
       status: 200,
     })
