@@ -37,6 +37,7 @@ export const NAV_ITEMS: NavItem[] = [
   { title: 'Fiches élèves', url: '/students', icon: FolderOpen, roles: ['admin', 'teacher'] },
   { title: 'Fiches profs', url: '/teachers', icon: ClipboardList, roles: ['admin'] },
   { title: 'Classes', url: '/classes', icon: GraduationCap, roles: ['admin'] },
+  { title: 'Matières', url: '/matieres', icon: BookOpen, roles: ['admin'] },
   { title: 'Notes', url: '/teacher/grades', icon: BookOpen, roles: ['admin', 'teacher'] },
   { title: 'Présences', url: '/attendance', icon: UserCheck, roles: ['admin', 'teacher'] },
   { title: 'Paiements', url: '/payments', icon: DollarSign, roles: ['admin'] },

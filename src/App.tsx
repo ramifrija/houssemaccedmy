@@ -35,6 +35,7 @@ const StudentDossierPage = lazy(() => import('./pages/StudentDossierPage'))
 const TeachersDossiersPage = lazy(() => import('./pages/TeachersDossiersPage'))
 const TeacherDossierPage = lazy(() => import('./pages/TeacherDossierPage'))
 const PaymentsPage = lazy(() => import('./pages/PaymentsPage'))
+const MatieresPage = lazy(() => import('./pages/MatieresPage'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const TermsOfService = lazy(() => import('./pages/TermsOfService'))
 
@@ -139,6 +140,7 @@ const AppContent = () => {
                 <>
                   <Route path="/users" element={<Users />} />
                   <Route path="/classes" element={<ClassesPage />} />
+                  <Route path="/matieres" element={<MatieresPage />} />
                   <Route path="/teacher/grades" element={<TeacherGradesPage />} />
                   <Route path="/reports" element={<ReportsPage />} />
                   <Route path="/attendance" element={<Attendance />} />

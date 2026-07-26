@@ -282,4 +282,13 @@ export async function fetchClassOptions(): Promise<ClassOption[]> {
   return data ?? []
 }
 
+export interface MatiereOption {
+  id: string
+  name: string
+}
 
+export async function fetchMatiereOptions(): Promise<MatiereOption[]> {
+  const { data, error } = await supabase.from('matieres').select('id, name').order('name')
+  if (error) throw error
+  return data ?? []
+}

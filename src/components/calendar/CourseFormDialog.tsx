@@ -5,8 +5,12 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { Check, ChevronsUpDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { Switch } from '@/components/ui/switch'
-import { fetchClassOptions, fetchTeacherOptions, TeacherOption, ClassOption } from '@/lib/users-api'
+import { fetchClassOptions, fetchTeacherOptions, fetchMatiereOptions, TeacherOption, ClassOption, MatiereOption } from '@/lib/users-api'
 
 export interface CourseFormValues {
   name: string
@@ -49,12 +53,15 @@ const CourseFormDialog = ({
   const [submitting, setSubmitting] = useState(false)
   const [teachers, setTeachers] = useState<TeacherOption[]>([])
   const [classes, setClasses] = useState<ClassOption[]>([])
+  const [matieres, setMatieres] = useState<MatiereOption[]>([])
+  const [openMatiere, setOpenMatiere] = useState(false)
 
   useEffect(() => {
     if (!isOpen) return
-    Promise.all([fetchTeacherOptions(), fetchClassOptions()]).then(([t, c]) => {
+    Promise.all([fetchTeacherOptions(), fetchClassOptions(), fetchMatiereOptions()]).then(([t, c, m]) => {
       setTeachers(t)
       setClasses(c)
+      setMatieres(m)
     })
   }, [isOpen])
 
@@ -123,15 +130,51 @@ const CourseFormDialog = ({
           <DialogDescription>Planifier un cours avec professeur, classe et horaire</DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
-          <div>
+          <div className="flex flex-col space-y-2">
             <Label htmlFor="title" className="text-school-black">Matière</Label>
-            <Input
-              id="title"
-              placeholder="Ex: Mathématiques"
-              className="border-school-yellow/30 focus:border-school-yellow"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+            <Popover open={openMatiere} onOpenChange={setOpenMatiere}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={openMatiere}
+                  className="justify-between border-school-yellow/30 focus:border-school-yellow font-normal"
+                >
+                  {name
+                    ? matieres.find((matiere) => matiere.name === name)?.name || name
+                    : "Sélectionner une matière..."}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="p-0 border-school-yellow/20" align="start">
+                <Command>
+                  <CommandInput placeholder="Rechercher une matière..." />
+                  <CommandList>
+                    <CommandEmpty>Aucune matière trouvée.</CommandEmpty>
+                    <CommandGroup>
+                      {matieres.map((matiere) => (
+                        <CommandItem
+                          key={matiere.id}
+                          value={matiere.name}
+                          onSelect={(currentValue) => {
+                            setName(currentValue)
+                            setOpenMatiere(false)
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              name === matiere.name ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          {matiere.name}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div>
