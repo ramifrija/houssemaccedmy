@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.houssemacademy.mobile',
+  appId: 'com.houssemacademy.app',
   appName: 'Houssem Academy',
   webDir: 'dist',
   server: {

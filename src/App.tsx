@@ -14,6 +14,12 @@ import { AppLoading } from '@/components/layout/AppLoading'
 import { getDefaultRouteForRole } from '@/lib/role-navigation'
 import { CourseReminderHost } from '@/components/CourseReminderHost'
 import { GlobalMessageNotification } from '@/components/messaging/GlobalMessageNotification'
+import { usePushNotifications } from '@/hooks/usePushNotifications'
+
+function PushNotificationHandler({ userId }: { userId?: string }) {
+  usePushNotifications(userId)
+  return null
+}
 
 const Index = lazy(() => import('./pages/Index'))
 const Users = lazy(() => import('./pages/Users'))
@@ -110,6 +116,7 @@ const AppContent = () => {
 
   return (
     <div className="min-h-dvh bg-background pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] lg:pb-0">
+      <PushNotificationHandler userId={user.id} />
       <CourseReminderHost />
       <SidebarProvider>
         <AppSidebar />

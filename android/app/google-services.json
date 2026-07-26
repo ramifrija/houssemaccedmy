@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1041227524517",
+    "project_id": "houssemacademy-73001",
+    "storage_bucket": "houssemacademy-73001.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041227524517:android:d668cdf959fc107683604c",
+        "android_client_info": {
+          "package_name": "com.houssemacademy.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtXlmaAJOUEs6Zl-ILLbpRktBhvV84nqs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

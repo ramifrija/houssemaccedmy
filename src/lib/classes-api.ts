@@ -5,7 +5,6 @@ import { ROLE_IDS } from '@/lib/role-ids'
 export interface ClassRow {
   id: number
   name: string
-  academic_level_id: number | null
   studentCount: number
 }
 
@@ -18,7 +17,7 @@ export interface ClassStudent {
 export async function fetchClasses(): Promise<ClassRow[]> {
   const { data: classes, error } = await supabase
     .from('classes')
-    .select('id, name, academic_level_id')
+    .select('id, name')
     .order('name')
 
   if (error) throw error
@@ -35,17 +34,15 @@ export async function fetchClasses(): Promise<ClassRow[]> {
   return (classes ?? []).map((cls) => ({
     id: cls.id,
     name: cls.name,
-    academic_level_id: cls.academic_level_id,
     studentCount: countByClass.get(cls.id) ?? 0,
   }))
 }
 
-export async function createClass(name: string, academicLevelId?: number) {
+export async function createClass(name: string) {
   const { data, error } = await supabase
     .from('classes')
     .insert({
       name: name.trim(),
-      academic_level_id: academicLevelId ?? null,
     })
     .select('id')
     .single()
