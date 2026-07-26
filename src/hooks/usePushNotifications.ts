@@ -3,9 +3,11 @@ import { PushNotifications } from '@capacitor/push-notifications';
 import { Capacitor } from '@capacitor/core';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 export const usePushNotifications = (userId?: string) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
@@ -66,13 +68,16 @@ export const usePushNotifications = (userId?: string) => {
 
     PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
       console.log('Push action performed: ', notification);
-      // Handle notification click (e.g., navigate to a specific page)
+      const data = notification.notification.data;
+      if (data && data.url) {
+        navigate(data.url);
+      }
     });
 
     return () => {
       PushNotifications.removeAllListeners();
     };
-  }, [userId, toast]);
+  }, [userId, toast, navigate]);
 
   return { token };
 };

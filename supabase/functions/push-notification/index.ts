@@ -30,12 +30,14 @@ serve(async (req) => {
     let receiverIds: string[] = []
     let title = 'Nouvelle notification'
     let body = 'Vous avez une nouvelle notification'
+    let redirectUrl = '/'
 
     if (payload.table === 'messages') {
       const conversationId = record.conversation_id
       const senderId = record.sender_id
-      body = record.content || 'Vous avez reçu un nouveau message'
+      body = record.content || 'Nouveau message'
       title = 'Nouveau Message'
+      redirectUrl = '/messaging'
       
       const { data: participants, error: pError } = await supabaseClient
         .from('conversation_participants')
@@ -48,11 +50,13 @@ serve(async (req) => {
       }
     } else if (payload.table === 'notifications') {
       receiverIds = [record.user_id]
-      title = record.title || 'Nouvelle notification'
-      body = record.content || ''
+      title = record.title || 'Nouvelle Notification'
+      body = record.content || 'Vous avez reçu une notification.'
+      redirectUrl = '/'
     } else if (payload.table === 'announcements') {
-      title = record.title || 'Nouvelle annonce'
+      title = record.title || 'Nouvelle Annonce'
       body = record.content ? record.content.substring(0, 100) : 'Une nouvelle annonce a été publiée.'
+      redirectUrl = '/announcements'
       
       let query = supabaseClient.from('profiles').select('user_id').neq('user_id', record.author_id)
       
@@ -124,6 +128,9 @@ serve(async (req) => {
             notification: {
               title: title,
               body: body,
+            },
+            data: {
+              url: redirectUrl
             },
             android: {
               priority: 'high',
