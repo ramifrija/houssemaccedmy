@@ -117,85 +117,87 @@ const AppContent = () => {
   const role = userProfile?.role
 
   return (
-    <PullToRefresh>
-      <div className="min-h-dvh bg-background pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] lg:pb-0">
-        <PushNotificationHandler userId={user.id} />
-        <CourseReminderHost />
-        <SidebarProvider>
-          <AppSidebar />
-          <SidebarInset className="min-w-0 overflow-x-hidden">
-            <Suspense fallback={<AppLoading message="Chargement de la page..." />}>
-              <Routes>
-                <Route path="/" element={<RoleHome />} />
+    <>
+      <PullToRefresh>
+        <div className="min-h-dvh bg-background pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] lg:pb-0">
+          <PushNotificationHandler userId={user.id} />
+          <CourseReminderHost />
+          <SidebarProvider>
+            <AppSidebar />
+            <SidebarInset className="min-w-0 overflow-x-hidden">
+              <Suspense fallback={<AppLoading message="Chargement de la page..." />}>
+                <Routes>
+                  <Route path="/" element={<RoleHome />} />
 
-                {/* Legacy redirects */}
-                <Route path="/student" element={<Navigate to="/student-dashboard" replace />} />
-                <Route path="/student/schedule" element={<Navigate to="/calendar" replace />} />
-                <Route path="/student/messages" element={<Navigate to="/messaging" replace />} />
-                <Route path="/student/announcements" element={<Navigate to="/announcements" replace />} />
-                <Route path="/student/settings" element={<Navigate to="/settings" replace />} />
-                <Route path="/teacher" element={<Navigate to="/teacher-dashboard" replace />} />
-                <Route path="/teacher/calendar" element={<Navigate to="/calendar" replace />} />
-                <Route path="/teacher/messages" element={<Navigate to="/messaging" replace />} />
-                <Route path="/teacher/settings" element={<Navigate to="/settings" replace />} />
-                <Route path="/teacher/students" element={<Navigate to="/students" replace />} />
+                  {/* Legacy redirects */}
+                  <Route path="/student" element={<Navigate to="/student-dashboard" replace />} />
+                  <Route path="/student/schedule" element={<Navigate to="/calendar" replace />} />
+                  <Route path="/student/messages" element={<Navigate to="/messaging" replace />} />
+                  <Route path="/student/announcements" element={<Navigate to="/announcements" replace />} />
+                  <Route path="/student/settings" element={<Navigate to="/settings" replace />} />
+                  <Route path="/teacher" element={<Navigate to="/teacher-dashboard" replace />} />
+                  <Route path="/teacher/calendar" element={<Navigate to="/calendar" replace />} />
+                  <Route path="/teacher/messages" element={<Navigate to="/messaging" replace />} />
+                  <Route path="/teacher/settings" element={<Navigate to="/settings" replace />} />
+                  <Route path="/teacher/students" element={<Navigate to="/students" replace />} />
 
-                <Route path="/calendar" element={<CalendarPage />} />
-                <Route path="/messaging" element={<MessagingPage />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/announcements" element={<AnnouncementsPage />} />
-                <Route path="/payments" element={<PaymentsPage />} />
+                  <Route path="/calendar" element={<CalendarPage />} />
+                  <Route path="/messaging" element={<MessagingPage />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/announcements" element={<AnnouncementsPage />} />
+                  <Route path="/payments" element={<PaymentsPage />} />
 
-                {role === 'admin' && (
-                  <>
-                    <Route path="/users" element={<Users />} />
-                    <Route path="/classes" element={<ClassesPage />} />
-                    <Route path="/matieres" element={<MatieresPage />} />
-                    <Route path="/teacher/grades" element={<TeacherGradesPage />} />
-                    <Route path="/reports" element={<ReportsPage />} />
-                    <Route path="/attendance" element={<Attendance />} />
-                    <Route path="/students" element={<StudentsDossiersPage />} />
-                    <Route path="/students/:studentId" element={<StudentDossierPage />} />
-                    <Route path="/teachers" element={<TeachersDossiersPage />} />
-                    <Route path="/teachers/:teacherId" element={<TeacherDossierPage />} />
-                  </>
-                )}
+                  {role === 'admin' && (
+                    <>
+                      <Route path="/users" element={<Users />} />
+                      <Route path="/classes" element={<ClassesPage />} />
+                      <Route path="/matieres" element={<MatieresPage />} />
+                      <Route path="/teacher/grades" element={<TeacherGradesPage />} />
+                      <Route path="/reports" element={<ReportsPage />} />
+                      <Route path="/attendance" element={<Attendance />} />
+                      <Route path="/students" element={<StudentsDossiersPage />} />
+                      <Route path="/students/:studentId" element={<StudentDossierPage />} />
+                      <Route path="/teachers" element={<TeachersDossiersPage />} />
+                      <Route path="/teachers/:teacherId" element={<TeacherDossierPage />} />
+                    </>
+                  )}
 
-                {role === 'teacher' && (
-                  <>
-                    <Route path="/attendance" element={<Attendance />} />
-                    <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
-                    <Route path="/teacher/grades" element={<TeacherGradesPage />} />
-                    <Route path="/students" element={<StudentsDossiersPage />} />
-                    <Route path="/students/:studentId" element={<StudentDossierPage />} />
-                  </>
-                )}
+                  {role === 'teacher' && (
+                    <>
+                      <Route path="/attendance" element={<Attendance />} />
+                      <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+                      <Route path="/teacher/grades" element={<TeacherGradesPage />} />
+                      <Route path="/students" element={<StudentsDossiersPage />} />
+                      <Route path="/students/:studentId" element={<StudentDossierPage />} />
+                    </>
+                  )}
 
-                {role === 'student' && (
-                  <>
-                    <Route path="/student-dashboard" element={<StudentDashboard />} />
-                    <Route path="/student/grades" element={<StudentGradesPage />} />
-                  </>
-                )}
+                  {role === 'student' && (
+                    <>
+                      <Route path="/student-dashboard" element={<StudentDashboard />} />
+                      <Route path="/student/grades" element={<StudentGradesPage />} />
+                    </>
+                  )}
 
-                {role === 'parent' && (
-                  <>
-                    <Route path="/parent-dashboard" element={<ParentDashboard />} />
-                  </>
-                )}
+                  {role === 'parent' && (
+                    <>
+                      <Route path="/parent-dashboard" element={<ParentDashboard />} />
+                    </>
+                  )}
 
-                {/* Pages légales (accessibles à tous les rôles) */}
-                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/terms-of-service" element={<TermsOfService />} />
+                  {/* Pages légales (accessibles à tous les rôles) */}
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/terms-of-service" element={<TermsOfService />} />
 
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </SidebarInset>
-        </SidebarProvider>
-        <MobileNavigation />
-      </div>
-    </PullToRefresh>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </SidebarInset>
+          </SidebarProvider>
+        </div>
+      </PullToRefresh>
+      <MobileNavigation />
+    </>
   )
 }
 

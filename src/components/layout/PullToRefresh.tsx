@@ -79,26 +79,28 @@ export const PullToRefresh = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       {/* Visual Indicator for Pull to Refresh */}
-      <div 
-        className="fixed top-0 left-0 w-full flex justify-center z-50 pointer-events-none transition-transform duration-300 ease-out"
-        style={{ 
-          transform: `translateY(${isRefreshing ? 60 : pullY}px)`,
-          opacity: (isPulling || isRefreshing) ? Math.min(pullY / 60, 1) : 0,
-          marginTop: '-40px'
-        }}
-      >
-        <div className="bg-white rounded-full shadow-lg p-2 flex items-center justify-center">
-          <Loader2 
-            className={`h-6 w-6 text-primary ${isRefreshing ? 'animate-spin' : ''}`} 
-            style={{ transform: !isRefreshing ? `rotate(${pullY * 2}deg)` : '' }}
-          />
+      {(isPulling || isRefreshing) && (
+        <div 
+          className="fixed top-0 left-0 w-full flex justify-center z-50 pointer-events-none transition-transform duration-300 ease-out"
+          style={{ 
+            transform: `translateY(${isRefreshing ? 60 : pullY}px)`,
+            opacity: Math.min(pullY / 60, 1),
+            marginTop: '-40px'
+          }}
+        >
+          <div className="bg-white rounded-full shadow-lg p-2 flex items-center justify-center">
+            <Loader2 
+              className={`h-6 w-6 text-primary ${isRefreshing ? 'animate-spin' : ''}`} 
+              style={{ transform: !isRefreshing ? `rotate(${pullY * 2}deg)` : '' }}
+            />
+          </div>
         </div>
-      </div>
+      )}
       
       {/* Content */}
       <div 
-        className="transition-transform duration-300 ease-out min-h-screen"
-        style={{ transform: `translateY(${isRefreshing ? 60 : pullY}px)` }}
+        className={isPulling || isRefreshing ? "transition-transform duration-300 ease-out min-h-screen" : "min-h-screen"}
+        style={(isPulling || isRefreshing) ? { transform: `translateY(${isRefreshing ? 60 : pullY}px)` } : undefined}
       >
         {children}
       </div>

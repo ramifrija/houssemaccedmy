@@ -42,6 +42,40 @@ function ListError({ message, onRetry }: { message: string; onRetry: () => void 
   )
 }
 
+function PaginatedUserGrid({ users, renderCard }: { users: UserRow[], renderCard: (user: UserRow) => React.ReactNode }) {
+  const [page, setPage] = useState(1)
+  const ITEMS_PER_PAGE = 6
+  const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE)
+  const startIndex = (page - 1) * ITEMS_PER_PAGE
+  const currentUsers = users.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+
+  // Reset to first page when search/filter changes the length of users
+  useMemo(() => {
+    setPage(1)
+  }, [users])
+
+  if (users.length === 0) return null
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {currentUsers.map(renderCard)}
+      </div>
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-6">
+          <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>
+            Précédent
+          </Button>
+          <span className="text-sm text-school-black/60">Page {page} sur {totalPages}</span>
+          <Button variant="outline" size="sm" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>
+            Suivant
+          </Button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 const Users = () => {
   const queryClient = useQueryClient()
   const { toast } = useToast()
@@ -352,8 +386,9 @@ const Users = () => {
                       </p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {filteredStudents.map((student) => {
+                    <PaginatedUserGrid
+                      users={filteredStudents}
+                      renderCard={(student) => {
                         const initials = (student.first_name ?? '').charAt(0).toUpperCase() + (student.last_name ?? '').charAt(0).toUpperCase() || '?'
                         const colors = ['bg-violet-500','bg-blue-500','bg-emerald-500','bg-rose-500','bg-amber-500','bg-cyan-500','bg-pink-500','bg-indigo-500']
                         const color = colors[student.id.charCodeAt(0) % colors.length]
@@ -426,8 +461,8 @@ const Users = () => {
                             </div>
                           </div>
                         )
-                      })}
-                    </div>
+                      }}
+                    />
                   )}
                 </CardContent>
               </Card>
@@ -470,8 +505,9 @@ const Users = () => {
                       </p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {filteredTeachers.map((teacher) => {
+                    <PaginatedUserGrid
+                      users={filteredTeachers}
+                      renderCard={(teacher) => {
                         const initials = (teacher.first_name ?? '').charAt(0).toUpperCase() + (teacher.last_name ?? '').charAt(0).toUpperCase() || '?'
                         const colors = ['bg-violet-500','bg-blue-500','bg-emerald-500','bg-rose-500','bg-amber-500','bg-cyan-500','bg-pink-500','bg-indigo-500']
                         const color = colors[teacher.id.charCodeAt(0) % colors.length]
@@ -533,8 +569,8 @@ const Users = () => {
                           </div>
                         </div>
                       )
-                    })}
-                    </div>
+                    }}
+                  />
                   )}
                 </CardContent>
               </Card>
@@ -577,8 +613,9 @@ const Users = () => {
                       </p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {filteredParents.map((parent) => {
+                    <PaginatedUserGrid
+                      users={filteredParents}
+                      renderCard={(parent) => {
                         const initials = (parent.first_name ?? '').charAt(0).toUpperCase() + (parent.last_name ?? '').charAt(0).toUpperCase() || '?'
                         const colors = ['bg-violet-500','bg-blue-500','bg-emerald-500','bg-rose-500','bg-amber-500','bg-cyan-500','bg-pink-500','bg-indigo-500']
                         const color = colors[parent.id.charCodeAt(0) % colors.length]
@@ -651,8 +688,8 @@ const Users = () => {
                             </div>
                           </div>
                         )
-                      })}
-                    </div>
+                      }}
+                    />
                   )}
                 </CardContent>
               </Card>
@@ -695,8 +732,9 @@ const Users = () => {
                       </p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {filteredAdmins.map((admin) => {
+                    <PaginatedUserGrid
+                      users={filteredAdmins}
+                      renderCard={(admin) => {
                         const initials = (admin.first_name ?? '').charAt(0).toUpperCase() + (admin.last_name ?? '').charAt(0).toUpperCase() || '?'
                         const colors = ['bg-violet-500','bg-blue-500','bg-emerald-500','bg-rose-500','bg-amber-500','bg-cyan-500','bg-pink-500','bg-indigo-500']
                         const color = colors[admin.id.charCodeAt(0) % colors.length]
@@ -758,8 +796,8 @@ const Users = () => {
                           </div>
                         </div>
                       )
-                    })}
-                    </div>
+                    }}
+                  />
                   )}
                 </CardContent>
               </Card>

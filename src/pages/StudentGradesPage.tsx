@@ -98,11 +98,9 @@ const StudentGradesPage = () => {
                   <Table>
                     <TableHeader className="bg-slate-50">
                       <TableRow>
-                        <TableHead className="w-[30%] font-semibold text-slate-700">Matière</TableHead>
-                        <TableHead className="w-[15%] font-semibold text-slate-700 text-center">Note</TableHead>
-                        <TableHead className="w-[15%] font-semibold text-slate-700">Professeur</TableHead>
-                        <TableHead className="w-[25%] font-semibold text-slate-700">Observations</TableHead>
-                        <TableHead className="w-[15%] font-semibold text-slate-700 text-right">Date</TableHead>
+                        <TableHead className="w-[45%] font-semibold text-slate-700">Matière</TableHead>
+                        <TableHead className="w-[30%] font-semibold text-slate-700 text-center">Note</TableHead>
+                        <TableHead className="w-[25%] font-semibold text-slate-700 text-right">Date</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -112,7 +110,7 @@ const StudentGradesPage = () => {
                         
                         return (
                           <TableRow key={course.id} className="hover:bg-slate-50/50">
-                            <TableCell className="font-medium text-school-black whitespace-nowrap">
+                            <TableCell className="font-medium text-school-black whitespace-nowrap text-sm sm:text-base">
                               {course.name}
                             </TableCell>
                             
@@ -123,18 +121,6 @@ const StudentGradesPage = () => {
                                 </Badge>
                               ) : (
                                 <span className="text-xs italic text-slate-400">Non noté</span>
-                              )}
-                            </TableCell>
-                            
-                            <TableCell className="text-sm text-slate-600 whitespace-nowrap">
-                              {grade ? grade.teacherName : '-'}
-                            </TableCell>
-                            
-                            <TableCell className="text-sm">
-                              {grade?.observations ? (
-                                <span className="text-slate-600 italic">"{grade.observations}"</span>
-                              ) : (
-                                <span className="text-slate-300">-</span>
                               )}
                             </TableCell>
                             
