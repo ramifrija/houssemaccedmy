@@ -422,30 +422,32 @@ export default function PaymentsPage() {
           </DialogHeader>
           
           <div className="space-y-6 py-4">
-            <div className="border border-school-yellow/30 rounded-md p-4 bg-school-yellow/5 space-y-4">
-              <h4 className="font-semibold text-school-black text-sm">Nouveau paiement</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold">Montant (DT)</label>
+            <div className="border border-school-yellow/30 rounded-xl p-4 sm:p-5 bg-school-yellow/5 space-y-5 shadow-sm">
+              <h4 className="font-semibold text-school-black text-base">Nouveau paiement</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">Montant (DT)</label>
                   <Input
                     type="number"
                     placeholder="Ex: 250"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
+                    className="h-12 text-lg font-medium"
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold">Notes / Mois concerné</label>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">Notes / Mois concerné</label>
                   <Input
                     placeholder="Ex: Frais de scolarité Octobre"
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
+                    className="h-12"
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold">Méthode</label>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">Méthode de paiement</label>
                   <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-12">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -455,10 +457,10 @@ export default function PaymentsPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold">Statut initial</label>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">Statut initial</label>
                   <Select value={status} onValueChange={(v) => setStatus(v as 'completed' | 'pending')}>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-12">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -469,7 +471,7 @@ export default function PaymentsPage() {
                 </div>
               </div>
               <Button
-                className="w-full bg-school-yellow text-school-black hover:bg-school-yellow-dark"
+                className="w-full h-12 text-base font-semibold bg-school-yellow text-school-black hover:bg-school-yellow-dark mt-2"
                 onClick={handleAddPayment}
                 disabled={!amount}
               >

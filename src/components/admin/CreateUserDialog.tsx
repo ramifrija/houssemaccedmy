@@ -49,6 +49,7 @@ export function CreateUserDialog({
   const [classId, setClassId] = useState<string>('')
   const [subject, setSubject] = useState('')
   const [classes, setClasses] = useState<ClassOption[]>([])
+  const [matieres, setMatieres] = useState<{id: string, name: string}[]>([])
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
@@ -64,6 +65,12 @@ export function CreateUserDialog({
       .select('id, name')
       .order('name')
       .then(({ data }) => setClasses(data ?? []))
+
+    supabase
+      .from('matieres')
+      .select('id, name')
+      .order('name')
+      .then(({ data }) => setMatieres(data ?? []))
   }, [open])
 
   const resetForm = () => {
@@ -195,14 +202,19 @@ export function CreateUserDialog({
 
           {role === 'teacher' && (
             <div>
-              <Label htmlFor="subject">Matière (optionnel)</Label>
-              <Input
-                id="subject"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                placeholder="Ex: Mathématiques"
-                className="mt-1 border-school-yellow/30"
-              />
+              <Label>Matière (optionnel)</Label>
+              <Select value={subject} onValueChange={setSubject}>
+                <SelectTrigger className="mt-1 border-school-yellow/30">
+                  <SelectValue placeholder="Sélectionner une matière" />
+                </SelectTrigger>
+                <SelectContent>
+                  {matieres.map((m) => (
+                    <SelectItem key={m.id} value={m.name}>
+                      {m.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           )}
 
