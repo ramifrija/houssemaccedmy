@@ -486,8 +486,8 @@ export default function PaymentsPage() {
               ) : payments.length === 0 ? (
                 <p className="text-sm text-center py-6 text-school-black/50">Aucun historique de paiement pour cet élève.</p>
               ) : (
-                <div className="overflow-x-auto rounded-md border border-school-yellow/30">
-                  <Table>
+                <div className="overflow-x-auto w-full max-w-[calc(95vw-2rem)] sm:max-w-full rounded-md border border-school-yellow/30">
+                  <Table className="w-full min-w-[600px]">
                     <TableHeader className="bg-school-gray-light">
                       <TableRow>
                         <TableHead>Montant</TableHead>
