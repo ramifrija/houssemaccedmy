@@ -2,9 +2,9 @@ workflows:
   ios-workflow:
     name: Build iOS (Capacitor)
     max_build_duration: 120
-    instance_type: mac_mini_m2
+    instance_type: mac_mini_m1
     environment:
-      node: 20.x
+      node: latest
       xcode: latest
       cocoapods: default
     scripts:
