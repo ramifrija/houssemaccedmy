@@ -12,6 +12,8 @@ import { Input } from '@/components/ui/input'
 import { supabase } from '@/integrations/supabase/client'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Link } from 'react-router-dom'
+import { requestAndRegisterPush, disablePushNotifications } from '@/hooks/usePushNotifications'
+
 const PREFS_KEY = 'houssem-app-prefs'
 
 type AppPrefs = {
@@ -52,9 +54,26 @@ const Settings = () => {
     setNotifications(prefs.notifications)
   }, [])
 
-  const handleSaveSettings = () => {
+  const handleSaveSettings = async () => {
     localStorage.setItem(PREFS_KEY, JSON.stringify({ notifications }))
-    toast({ title: 'Préférences enregistrées' })
+    
+    if (notifications) {
+      const success = await requestAndRegisterPush()
+      if (!success) {
+        toast({ 
+          variant: 'destructive',
+          title: 'Permission refusée',
+          description: "Impossible d'activer les notifications push. Veuillez les autoriser dans les paramètres de votre téléphone."
+        })
+      } else {
+        toast({ title: 'Préférences enregistrées et notifications activées' })
+      }
+    } else {
+      if (user) {
+        await disablePushNotifications(user.id)
+      }
+      toast({ title: 'Préférences enregistrées et notifications désactivées' })
+    }
   }
 
   return (
