@@ -41,6 +41,7 @@ const StudentDossierPage = lazy(() => import('./pages/StudentDossierPage'))
 const TeachersDossiersPage = lazy(() => import('./pages/TeachersDossiersPage'))
 const TeacherDossierPage = lazy(() => import('./pages/TeacherDossierPage'))
 const PaymentsPage = lazy(() => import('./pages/PaymentsPage'))
+const FinancesPage = lazy(() => import('./pages/FinancesPage'))
 const MatieresPage = lazy(() => import('./pages/MatieresPage'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const TermsOfService = lazy(() => import('./pages/TermsOfService'))
@@ -149,6 +150,7 @@ const AppContent = () => {
 
                   {role === 'admin' && (
                     <>
+                      <Route path="/finances" element={<FinancesPage />} />
                       <Route path="/users" element={<Users />} />
                       <Route path="/classes" element={<ClassesPage />} />
                       <Route path="/matieres" element={<MatieresPage />} />

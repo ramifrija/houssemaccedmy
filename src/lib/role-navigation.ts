@@ -12,6 +12,7 @@ import {
   FolderOpen,
   ClipboardList,
   DollarSign,
+  Wallet,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -41,6 +42,7 @@ export const NAV_ITEMS: NavItem[] = [
   { title: 'Notes', url: '/teacher/grades', icon: BookOpen, roles: ['admin', 'teacher'] },
   { title: 'Présences', url: '/attendance', icon: UserCheck, roles: ['admin', 'teacher'] },
   { title: 'Paiements', url: '/payments', icon: DollarSign, roles: ['admin'] },
+  { title: 'Finances', url: '/finances', icon: Wallet, roles: ['admin'] },
   { title: 'Rapports', url: '/reports', icon: BarChart3, roles: ['admin'] },
   { title: 'Paramètres', url: '/settings', icon: Settings, roles: ['admin', 'teacher', 'student', 'parent'] },
 ]
