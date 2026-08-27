@@ -1,0 +1,22 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # S'exécute tous les jours à minuit (UTC) soit chaque 24h
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Permet de tester le ping manuellement depuis l'interface GitHub
+
+jobs:
+  ping-database:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        env:
+          SUPABASE_URL: "https://evxgrbjmrwngwlyeepmm.supabase.co"
+          SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2eGdyYmptcnduZ3dseWVlcG1tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2Njc3NDcsImV4cCI6MjEwMDI0Mzc0N30.RpkCmU8lPgMSarotIBLcJXeea_gDHnAMjPrRlGcgqew"
+        run: |
+          echo "Pinging Supabase to keep it awake..."
+          curl -X GET "${SUPABASE_URL}/rest/v1/profiles?select=id&limit=1" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}"
+          echo -e "\nPing executed successfully."

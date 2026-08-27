@@ -25,8 +25,8 @@ export default function PingPage() {
 
         const now = new Date()
         setPingResult({
-          message: "Ping avec succès ! Connexion à la base de données établie.",
-          studentsCount: count,
+          message: "Ping avec succès ! Le serveur de base de données est accessible.",
+          studentsCount: count, // Note: affichera 0 si vous n'êtes pas connecté à cause de la sécurité (RLS)
           date: now.toLocaleDateString('fr-FR'),
           time: now.toLocaleTimeString('fr-FR')
         })

@@ -3,7 +3,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from '@/components/auth/AuthProvider'
 import { AuthPage } from '@/components/auth/AuthPage'
 import { PendingApproval } from '@/components/auth/PendingApproval'
@@ -69,11 +69,31 @@ import { PullToRefresh } from '@/components/layout/PullToRefresh'
 
 const AppContent = () => {
   const { user, userProfile, loading, profileLoading, profileError, signOut, refreshProfile } = useAuth()
+  const location = useLocation()
+  
+  const isPublicRoute = ['/ping', '/privacy-policy', '/terms-of-service'].includes(location.pathname)
 
   const waitingProfile = Boolean(user && profileLoading && !userProfile && !profileError)
 
   if (loading || waitingProfile) {
     return <AppLoading message="Connexion en cours..." />
+  }
+
+  if (!user && isPublicRoute) {
+    return (
+      <div className="min-h-dvh bg-background pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] lg:pb-0">
+        <SidebarProvider>
+          <Suspense fallback={<AppLoading message="Chargement de la page..." />}>
+            <Routes>
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/ping" element={<PingPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+        </SidebarProvider>
+      </div>
+    )
   }
 
   if (!user) {
