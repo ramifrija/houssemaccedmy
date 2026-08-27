@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Separator } from '@/components/ui/separator'
-import { Bell, Shield, Trash2, FileText } from 'lucide-react'
+import { Bell, Shield, Trash2, FileText, Server } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/components/auth/AuthProvider'
@@ -41,6 +41,27 @@ const Settings = () => {
   const [isUpdating, setIsUpdating] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
+  const [pingResult, setPingResult] = useState<{message: string, date: string, time: string} | null>(null)
+  const [isPinging, setIsPinging] = useState(false)
+
+  const handlePing = async () => {
+    setIsPinging(true)
+    setPingResult(null)
+    try {
+      const res = await fetch('/api/ping')
+      const data = await res.json()
+      if (res.ok) {
+        setPingResult({ message: data.message, date: data.date, time: data.time })
+        toast({ title: 'Ping réussi' })
+      } else {
+        throw new Error(data.error || 'Erreur API')
+      }
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: 'Erreur Ping', description: err.message })
+    } finally {
+      setIsPinging(false)
+    }
+  }
 
   useEffect(() => {
     if (userProfile) {
@@ -168,6 +189,36 @@ const Settings = () => {
               >
                 Enregistrer
               </Button>
+            </CardContent>
+          </Card>
+
+          {/* Test de connexion API */}
+          <Card className="border-school-yellow/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-school-black">
+                <Server className="w-5 h-5" />
+                Test de connexion API
+              </CardTitle>
+              <CardDescription>Vérifier la connexion avec le serveur et la base de données</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button 
+                onClick={handlePing} 
+                disabled={isPinging}
+                className="bg-school-yellow text-school-black hover:bg-school-yellow-dark"
+              >
+                {isPinging ? 'Test en cours...' : 'Tester la connexion'}
+              </Button>
+              
+              {pingResult && (
+                <div className="p-4 bg-green-50 text-green-800 rounded-md border border-green-200 space-y-2">
+                  <p className="font-semibold text-green-900">{pingResult.message}</p>
+                  <div className="flex gap-4 text-sm text-green-700">
+                    <span>📅 Date : {pingResult.date}</span>
+                    <span>⏱ Heure : {pingResult.time}</span>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
