@@ -1,13 +1,6 @@
 [build]
   command = "npm run build:prod"
   publish = "dist"
-  functions = "api"
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-  force = true
 
 [[redirects]]
   from = "/*"

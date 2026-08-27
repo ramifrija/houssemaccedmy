@@ -45,6 +45,7 @@ const FinancesPage = lazy(() => import('./pages/FinancesPage'))
 const MatieresPage = lazy(() => import('./pages/MatieresPage'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const TermsOfService = lazy(() => import('./pages/TermsOfService'))
+const PingPage = lazy(() => import('./pages/Ping'))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -190,6 +191,7 @@ const AppContent = () => {
                   {/* Pages légales (accessibles à tous les rôles) */}
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/terms-of-service" element={<TermsOfService />} />
+                  <Route path="/ping" element={<PingPage />} />
 
                   <Route path="*" element={<NotFound />} />
                 </Routes>

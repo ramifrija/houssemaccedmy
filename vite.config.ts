@@ -108,57 +108,6 @@ function localApiPlugin(env) {
           }
         });
       });
-
-      server.middlewares.use('/api/ping', async (req, res) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-        
-        if (req.method === 'OPTIONS') {
-          res.statusCode = 200;
-          return res.end();
-        }
-
-        if (req.method !== 'GET') {
-          res.statusCode = 405;
-          return res.end(JSON.stringify({ error: 'Method not allowed' }));
-        }
-
-        try {
-          const supabaseUrl = env.VITE_SUPABASE_URL;
-          const serviceKey = env.SUPABASE_SERVICE_ROLE_KEY;
-
-          if (!serviceKey) {
-            res.statusCode = 500;
-            return res.end(JSON.stringify({ error: 'SUPABASE_SERVICE_ROLE_KEY manquant' }));
-          }
-
-          const adminClient = createClient(supabaseUrl, serviceKey);
-          const { count, error } = await adminClient
-            .from('profiles')
-            .select('*', { count: 'exact', head: true })
-            .eq('role_id', 3);
-
-          if (error) {
-            res.statusCode = 500;
-            return res.end(JSON.stringify({ error: error.message }));
-          }
-
-          const now = new Date();
-          res.statusCode = 200;
-          return res.end(JSON.stringify({ 
-            success: true,
-            message: "Ping avec succès ! Connexion à la base de données établie.",
-            studentsCount: count,
-            timestamp: now.toISOString(),
-            date: now.toLocaleDateString('fr-FR'),
-            time: now.toLocaleTimeString('fr-FR')
-          }));
-        } catch (err) {
-          res.statusCode = 500;
-          return res.end(JSON.stringify({ error: err.message }));
-        }
-      });
     }
   }
 }
