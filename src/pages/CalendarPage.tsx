@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import MonthlyCalendarPlanner from '@/components/MonthlyCalendarPlanner'
 import CalendarHeader from '@/components/calendar/CalendarHeader'
@@ -109,8 +108,8 @@ const CalendarPage = () => {
     queryKey: userProfile?.role === 'parent' && activeChild
       ? ['calendar-sessions-child', activeChild.user_id]
       : userProfile?.role === 'teacher'
-      ? ['calendar-sessions-teacher', user?.id]
-      : queryKeys.calendarSessions,
+        ? ['calendar-sessions-teacher', user?.id]
+        : queryKeys.calendarSessions,
     queryFn: () => {
       if (userProfile?.role === 'parent') {
         if (!activeChild?.user_id) return []
@@ -205,10 +204,10 @@ const CalendarPage = () => {
             <>
               <div className="grid grid-cols-1 gap-6">
                 <div className="w-full">
-                  <MonthlyCalendarPlanner 
-                    courses={sessions} 
-                    selectedDate={selectedDate} 
-                    onDateSelect={(d) => d && setSelectedDate(d)} 
+                  <MonthlyCalendarPlanner
+                    courses={sessions}
+                    selectedDate={selectedDate}
+                    onDateSelect={(d) => d && setSelectedDate(d)}
                   />
                 </div>
                 {sessions.length === 0 ? (
@@ -243,16 +242,16 @@ const CalendarPage = () => {
       </div>
 
       {canManage && (
-      <CourseFormDialog
-        isOpen={isDialogOpen}
-        onOpenChange={(open) => {
-          setIsDialogOpen(open)
-          if (!open) setSelectedSession(null)
-        }}
-        defaultSessionDate={defaultSessionDate}
-        initialValues={
-          selectedSession
-            ? {
+        <CourseFormDialog
+          isOpen={isDialogOpen}
+          onOpenChange={(open) => {
+            setIsDialogOpen(open)
+            if (!open) setSelectedSession(null)
+          }}
+          defaultSessionDate={defaultSessionDate}
+          initialValues={
+            selectedSession
+              ? {
                 sessionId: selectedSession.id,
                 courseId: selectedSession.courseId,
                 name: selectedSession.title,
@@ -264,28 +263,28 @@ const CalendarPage = () => {
                 room: selectedSession.room === '—' ? '' : selectedSession.room,
                 notes: selectedSession.notes ?? '',
               }
-            : undefined
-        }
-        onSubmit={async (payload) => {
-          if (selectedSession) {
-            await updateCourse.mutateAsync({
-              sessionId: selectedSession.id,
-              courseId: selectedSession.courseId,
-              name: payload.name,
-              teacherId: payload.teacherId,
-              classId: payload.classId,
-              sessionDate: payload.sessionDate,
-              startTime: payload.startTime,
-              durationMinutes: payload.durationMinutes,
-              room: payload.room,
-              notes: payload.notes,
-            })
-            setSelectedSession(null)
-          } else {
-            await createCourse.mutateAsync(payload)
+              : undefined
           }
-        }}
-      />
+          onSubmit={async (payload) => {
+            if (selectedSession) {
+              await updateCourse.mutateAsync({
+                sessionId: selectedSession.id,
+                courseId: selectedSession.courseId,
+                name: payload.name,
+                teacherId: payload.teacherId,
+                classId: payload.classId,
+                sessionDate: payload.sessionDate,
+                startTime: payload.startTime,
+                durationMinutes: payload.durationMinutes,
+                room: payload.room,
+                notes: payload.notes,
+              })
+              setSelectedSession(null)
+            } else {
+              await createCourse.mutateAsync(payload)
+            }
+          }}
+        />
       )}
     </div>
   )

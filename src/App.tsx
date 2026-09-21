@@ -26,6 +26,7 @@ const Users = lazy(() => import('./pages/Users'))
 const ClassesPage = lazy(() => import('./pages/ClassesPage'))
 const Attendance = lazy(() => import('./pages/Attendance'))
 const CalendarPage = lazy(() => import('./pages/CalendarPage'))
+const EmploisDuTempsPage = lazy(() => import('./pages/EmploisDuTempsPage'))
 const Settings = lazy(() => import('./pages/Settings'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 const TeacherDashboard = lazy(() => import('./pages/TeacherDashboard'))
@@ -174,6 +175,7 @@ const AppContent = () => {
                       <Route path="/finances" element={<FinancesPage />} />
                       <Route path="/users" element={<Users />} />
                       <Route path="/classes" element={<ClassesPage />} />
+                      <Route path="/timetables" element={<EmploisDuTempsPage />} />
                       <Route path="/matieres" element={<MatieresPage />} />
                       <Route path="/teacher/grades" element={<TeacherGradesPage />} />
                       <Route path="/reports" element={<ReportsPage />} />
