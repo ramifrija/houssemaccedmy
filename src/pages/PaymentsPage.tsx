@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { supabase } from '@/integrations/supabase/client'
 import { useToast } from '@/hooks/use-toast'
@@ -46,6 +47,12 @@ export default function PaymentsPage() {
   const [paymentMethod, setPaymentMethod] = useState('cash')
   const [status, setStatus] = useState<'completed' | 'pending'>('completed')
   const [notes, setNotes] = useState('')
+
+  // Monthly view states
+  const [selectedMonth, setSelectedMonth] = useState<string>(() => {
+    const today = new Date()
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`
+  })
 
   // 1. Fetch all classes
   const { data: classes = [] } = useQuery({
@@ -110,6 +117,47 @@ export default function PaymentsPage() {
     enabled: !!selectedStudentForPayments
   })
 
+  // 4. Fetch all payments for the monthly view
+  const { data: allPayments = [], isLoading: loadingAllPayments, refetch: refetchAllPayments } = useQuery({
+    queryKey: ['all-payments-monthly'],
+    queryFn: async () => {
+      const { data: payData, error } = await supabase
+        .from('student_payments')
+        .select('*')
+        .order('payment_date', { ascending: false })
+
+      if (error) throw error
+
+      const studentIds = Array.from(new Set(payData.map(p => p.student_id)))
+      
+      if (studentIds.length === 0) return []
+
+      const { data: profiles, error: profError } = await supabase
+        .from('profiles')
+        .select('user_id, first_name, last_name')
+        .in('user_id', studentIds)
+        
+      if (profError) throw profError
+      
+      const profileMap = new Map(profiles.map(p => [p.user_id, formatUserDisplayName(p as any)]))
+      
+      return payData.map(p => ({
+        ...p,
+        student_name: profileMap.get(p.student_id) || 'Élève inconnu'
+      }))
+    }
+  })
+
+  const availableMonths = Array.from(new Set(allPayments.map(p => p.payment_date.substring(0, 7)))).sort().reverse()
+  const currentMonthStr = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`
+  if (!availableMonths.includes(currentMonthStr)) {
+    availableMonths.unshift(currentMonthStr)
+  }
+
+  const paymentsForSelectedMonth = allPayments.filter(p => p.payment_date.startsWith(selectedMonth))
+  const paidPayments = paymentsForSelectedMonth.filter(p => p.status === 'completed')
+  const unpaidPayments = paymentsForSelectedMonth.filter(p => p.status !== 'completed')
+
   const filteredClasses = classes.filter(c => 
     c.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
@@ -145,6 +193,7 @@ export default function PaymentsPage() {
       setAmount('')
       setNotes('')
       refetchPayments()
+      refetchAllPayments()
     } catch (err) {
       toast({
         variant: 'destructive',
@@ -169,6 +218,7 @@ export default function PaymentsPage() {
         description: `Paiement passé à '${newStatus === 'completed' ? 'Payé' : 'En attente'}'`,
       })
       refetchPayments()
+      refetchAllPayments()
     } catch (err) {
       console.error(err)
     }
@@ -186,6 +236,7 @@ export default function PaymentsPage() {
       
       toast({ title: 'Paiement supprimé' })
       refetchPayments()
+      refetchAllPayments()
     } catch (err) {
       toast({ variant: 'destructive', title: 'Erreur', description: 'Impossible de supprimer le paiement' })
     }
@@ -322,8 +373,19 @@ export default function PaymentsPage() {
       />
 
       <PageContent className="animate-fade-in space-y-6">
-        <Card className="border-school-yellow/20">
-          <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <Tabs defaultValue="par-eleve" className="w-full space-y-6">
+          <TabsList className="bg-school-yellow/10 border border-school-yellow/20 p-1">
+            <TabsTrigger value="par-eleve" className="data-[state=active]:bg-white data-[state=active]:text-school-black">
+              Par Élève
+            </TabsTrigger>
+            <TabsTrigger value="par-mois" className="data-[state=active]:bg-white data-[state=active]:text-school-black">
+              Par Mois
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="par-eleve" className="mt-0">
+            <Card className="border-school-yellow/20">
+              <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <CardTitle className="text-lg">Paiements par élève</CardTitle>
               {listClassId && (
@@ -403,6 +465,134 @@ export default function PaymentsPage() {
             )}
           </CardContent>
         </Card>
+          </TabsContent>
+
+          <TabsContent value="par-mois" className="mt-0 space-y-6">
+            <Card className="border-school-yellow/20">
+              <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <CardTitle className="text-lg">Historique Mensuel</CardTitle>
+                <div className="w-full sm:w-64">
+                  <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner un mois" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableMonths.map(month => {
+                        const [year, m] = month.split('-')
+                        const date = new Date(parseInt(year), parseInt(m) - 1)
+                        const monthName = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+                        return (
+                          <SelectItem key={month} value={month} className="capitalize">
+                            {monthName}
+                          </SelectItem>
+                        )
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {loadingAllPayments ? (
+                  <p className="text-center py-6 text-school-black/50">Chargement...</p>
+                ) : (
+                  <Tabs defaultValue="paid" className="w-full">
+                    <TabsList className="mb-6 flex flex-col sm:grid sm:grid-cols-2 w-full max-w-md bg-slate-100/50 h-auto p-1 gap-1">
+                      <TabsTrigger 
+                        value="paid" 
+                        className="data-[state=active]:bg-green-50 data-[state=active]:text-green-700 data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-green-200 py-2 w-full"
+                      >
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Payé ({paidPayments.length})
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="unpaid" 
+                        className="data-[state=active]:bg-amber-50 data-[state=active]:text-amber-700 data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-amber-200 py-2 w-full"
+                      >
+                        <AlertTriangle className="w-4 h-4 mr-2" />
+                        Non payé ({unpaidPayments.length})
+                      </TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="paid" className="mt-0">
+                      {paidPayments.length === 0 ? (
+                        <p className="text-sm text-school-black/50 py-4 text-center border rounded-lg bg-slate-50/50">Aucun paiement validé pour ce mois.</p>
+                      ) : (
+                        <div className="rounded-md border border-school-yellow/30 overflow-x-auto">
+                          <Table>
+                            <TableHeader className="bg-green-50/50">
+                              <TableRow>
+                                <TableHead>Élève</TableHead>
+                                <TableHead>Montant</TableHead>
+                                <TableHead>Date</TableHead>
+                                <TableHead>Méthode</TableHead>
+                                <TableHead>Notes</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {paidPayments.map(p => (
+                                <TableRow key={p.id}>
+                                  <TableCell className="font-medium">{p.student_name}</TableCell>
+                                  <TableCell className="font-bold text-green-700">{p.amount} DT</TableCell>
+                                  <TableCell className="text-sm">{new Date(p.payment_date).toLocaleDateString('fr-FR')}</TableCell>
+                                  <TableCell className="text-sm capitalize">{p.payment_method}</TableCell>
+                                  <TableCell className="text-sm text-gray-600">{p.notes}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      )}
+                    </TabsContent>
+
+                    <TabsContent value="unpaid" className="mt-0">
+                      {unpaidPayments.length === 0 ? (
+                        <p className="text-sm text-school-black/50 py-4 text-center border rounded-lg bg-slate-50/50">Aucun paiement en attente pour ce mois.</p>
+                      ) : (
+                        <div className="rounded-md border border-school-yellow/30 overflow-x-auto">
+                          <Table>
+                            <TableHeader className="bg-amber-50/50">
+                              <TableRow>
+                                <TableHead>Élève</TableHead>
+                                <TableHead>Montant</TableHead>
+                                <TableHead>Date</TableHead>
+                                <TableHead>Statut</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {unpaidPayments.map(p => (
+                                <TableRow key={p.id}>
+                                  <TableCell className="font-medium">{p.student_name}</TableCell>
+                                  <TableCell className="font-bold">{p.amount} DT</TableCell>
+                                  <TableCell className="text-sm">{new Date(p.payment_date).toLocaleDateString('fr-FR')}</TableCell>
+                                  <TableCell>
+                                    <Badge variant="outline" className="border-amber-400 bg-amber-50 text-amber-800">
+                                      En attente
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="text-right">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="border-amber-300 text-amber-800 hover:bg-amber-100"
+                                      onClick={() => handleSendReminderNotification(p as any)}
+                                    >
+                                      <Bell className="w-3.5 h-3.5 mr-1" /> Relancer
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      )}
+                    </TabsContent>
+                  </Tabs>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </PageContent>
 
       <Dialog 
