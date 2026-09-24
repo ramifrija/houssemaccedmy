@@ -86,8 +86,12 @@ async function fetchCurrentPaymentStatuses(
   if (studentIds.length === 0) return map
 
   const now = new Date()
-  const currentMonthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
-  const currentMonthEnd = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-31`
+  const year = now.getFullYear()
+  const month = now.getMonth() + 1
+  const lastDay = new Date(year, month, 0).getDate()
+  
+  const currentMonthStart = `${year}-${String(month).padStart(2, '0')}-01`
+  const currentMonthEnd = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
 
   const { data, error } = await supabase
     .from('student_payments')
